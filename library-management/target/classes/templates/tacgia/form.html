@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm mới Tác Giả</title>
+    <style>
+        body {font-family: Arial, sans-serif; margin: 2rem;}
+        .form-group {margin-bottom: 1rem;}
+        label {display: block; margin-bottom: 0.5rem;}
+        input, textarea {width: 100%; padding: 0.5rem;}
+        button {padding: 0.5rem 1rem; background:#28a745; color:#fff; border:none;}
+    </style>
+</head>
+<body>
+<h2>Thêm mới Tác Giả</h2>
+<form th:action="@{/tacgia}" th:object="${tacGia}" method="post">
+    <div class="form-group">
+        <label for="ten">Tên</label>
+        <input type="text" id="ten" th:field="*{ten}" required/>
+    </div>
+    <div class="form-group">
+        <label for="tieuSu">Tiểu Sử</label>
+        <textarea id="tieuSu" th:field="*{tieuSu}" rows="4"></textarea>
+    </div>
+    <button type="submit">Lưu</button>
+</form>
+<a th:href="@{/tacgia}">Quay lại danh sách</a>
+</body>
+</html>

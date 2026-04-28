@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Tác Giả</title>
+</head>
+<body>
+    <h1>Danh sách Tác Giả</h1>
+    <a th:href="@{/tacgia/new}">Thêm mới</a>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Tiểu sử</th>
+            <th>Hành động</th>
+        </tr>
+        <tr th:each="tg : ${tacGias}">
+            <td th:text="${tg.maTacGia}">1</td>
+            <td th:text="${tg.ten}">Tên</td>
+            <td th:text="${tg.tieuSu}">Tiểu sử</td>
+            <td>
+                <a th:href="@{'/tacgia/delete/' + ${tg.maTacGia}}">Xóa</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
