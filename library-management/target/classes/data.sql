@@ -41,6 +41,7 @@ CREATE TABLE NhanVien (
     ma_nhan_vien INT AUTO_INCREMENT PRIMARY KEY,
     ten VARCHAR(255) NOT NULL,
     sdt VARCHAR(20),
+    mat_khau VARCHAR(100) NOT NULL,
     trang_thai_lam_viec BOOLEAN DEFAULT TRUE,
     UNIQUE KEY uq_nhanvien_sdt (sdt)
 );
