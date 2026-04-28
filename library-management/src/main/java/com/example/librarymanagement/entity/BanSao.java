@@ -18,11 +18,13 @@ public class BanSao {
     @JoinColumn(name = "ma_tai_lieu", referencedColumnName = "ma_tai_lieu")
     private TaiLieu taiLieu;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "tinh_trang_vat_ly")
-    private String tinhTrangVatLy; // enum stored as string
+    private TinhTrangVatLy tinhTrangVatLy;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "trang_thai_luu_thong")
-    private String trangThaiLuuThong; // enum stored as string
+    private TrangThaiLuuThong trangThaiLuuThong;
 
     @OneToMany(mappedBy = "banSao")
     private List<ChiTietPhieuMuon> chiTietPhieuMuons;

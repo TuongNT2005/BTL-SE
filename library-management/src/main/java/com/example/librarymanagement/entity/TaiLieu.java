@@ -23,8 +23,9 @@ public class TaiLieu {
     @Column(name = "mo_ta", columnDefinition = "TEXT")
     private String moTa;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "the_loai")
-    private String theLoai; // enum stored as string
+    private TheLoai theLoai;
 
     @ManyToOne
     @JoinColumn(name = "ma_nxb", referencedColumnName = "ma_nxb")

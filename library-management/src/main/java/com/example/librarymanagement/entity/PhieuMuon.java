@@ -21,12 +21,13 @@ public class PhieuMuon {
     @Column(name = "ngay_het_han", nullable = false)
     private LocalDateTime ngayHetHan;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "trang_thai")
-    private String trangThai; // enum stored as string
+    private TrangThaiPhieuMuon trangThai;
 
     @ManyToOne
     @JoinColumn(name = "ma_nhan_vien", referencedColumnName = "ma_nhan_vien")
-    private NhanVien nhanVien;
+    private NhanVien nhanVienTao;
 
     @ManyToOne
     @JoinColumn(name = "ma_the", referencedColumnName = "ma_the")

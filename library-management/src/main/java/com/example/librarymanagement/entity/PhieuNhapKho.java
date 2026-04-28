@@ -26,7 +26,7 @@ public class PhieuNhapKho {
 
     @ManyToOne
     @JoinColumn(name = "ma_nhan_vien", referencedColumnName = "ma_nhan_vien")
-    private NhanVien nhanVien;
+    private NhanVien nguoiLapPhieu;
 
     @OneToMany(mappedBy = "phieuNhapKho")
     private List<ChiTietPhieuNhap> chiTietPhieuNhaps;

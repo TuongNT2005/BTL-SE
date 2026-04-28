@@ -21,8 +21,9 @@ public class TheThuVien {
     @Column(name = "ngay_het_han", nullable = false)
     private LocalDateTime ngayHetHan;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "trang_thai")
-    private String trangThai; // enum stored as string
+    private TrangThaiThe trangThai;
 
     @ManyToOne
     @JoinColumn(name = "ma_goi_the", referencedColumnName = "ma_goi_the")

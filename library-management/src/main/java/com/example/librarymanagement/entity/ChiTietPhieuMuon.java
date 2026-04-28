@@ -25,6 +25,7 @@ public class ChiTietPhieuMuon {
     @Column(name = "ngay_tra")
     private LocalDateTime ngayTra;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "tinh_trang_vat_ly")
-    private String tinhTrangVatLy; // enum stored as string
+    private TinhTrangVatLy tinhTrangVatLy;
 }

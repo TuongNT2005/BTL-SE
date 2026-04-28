@@ -20,8 +20,9 @@ public class GoiThe {
     @Column(name = "gia", nullable = false)
     private Long gia;
 
+    // Thời hạn tính theo tháng
     @Column(name = "thoi_han", nullable = false)
-    private Integer thoiHan; // months
+    private Integer thoiHan; 
 
     @OneToMany(mappedBy = "goiThe")
     private List<TheThuVien> theThuViens;

@@ -2,7 +2,6 @@ package com.example.librarymanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.List;
 
 @Entity
 @Table(name = "bandoc")
@@ -26,6 +25,6 @@ public class BanDoc {
     @Column(name = "sdt", length = 20)
     private String sdt;
 
-    @OneToMany(mappedBy = "banDoc")
-    private List<TheThuVien> theThuViens;
+    @OneToOne(mappedBy = "banDoc")
+    private TheThuVien theThuVien;
 }

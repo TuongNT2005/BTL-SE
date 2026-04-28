@@ -23,12 +23,12 @@ public class NhanVien {
     @Column(name = "trang_thai_lam_viec")
     private Boolean trangThaiLamViec = true;
 
-    @OneToMany(mappedBy = "nhanVien")
+    @OneToMany(mappedBy = "nguoiLapPhieu")
     private List<PhieuNhapKho> phieuNhapKhos;
 
-    @OneToMany(mappedBy = "nhanVien")
+    @OneToMany(mappedBy = "nhanVienTao")
     private List<PhieuMuon> phieuMuons;
 
-    @OneToMany(mappedBy = "nhanVien")
+    @OneToMany(mappedBy = "nguoiThu")
     private List<HoaDon> hoaDons;
 }

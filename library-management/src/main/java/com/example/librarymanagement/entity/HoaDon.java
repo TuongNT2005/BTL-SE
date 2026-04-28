@@ -23,7 +23,7 @@ public class HoaDon {
 
     @ManyToOne
     @JoinColumn(name = "ma_nhan_vien", referencedColumnName = "ma_nhan_vien")
-    private NhanVien nhanVien;
+    private NhanVien nguoiThu;
 
     @OneToMany(mappedBy = "hoaDon")
     private List<PhieuPhat> phieuPhats;
