@@ -66,6 +66,26 @@ CREATE TABLE TaiLieu (
     UNIQUE KEY uq_tailieu_isbn (isbn)
 );
 
+CREATE TABLE PhieuNhapKho (
+    ma_phieu_nhap INT AUTO_INCREMENT PRIMARY KEY,
+    ngay_nhap DATETIME DEFAULT CURRENT_TIMESTAMP,
+    tong_tien BIGINT DEFAULT 0,
+    ma_ncc INT NOT NULL,
+    ma_nhan_vien INT NOT NULL,
+    FOREIGN KEY (ma_ncc) REFERENCES NhaCungCap(ma_ncc) ON DELETE RESTRICT,
+    FOREIGN KEY (ma_nhan_vien) REFERENCES NhanVien(ma_nhan_vien) ON DELETE RESTRICT
+);
+
+CREATE TABLE ChiTietPhieuNhap (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    ma_phieu_nhap INT NOT NULL,
+    ma_tai_lieu INT NOT NULL,
+    so_luong BIGINT NOT NULL,
+    don_gia BIGINT NOT NULL,
+    FOREIGN KEY (ma_phieu_nhap) REFERENCES PhieuNhapKho(ma_phieu_nhap) ON DELETE CASCADE,
+    FOREIGN KEY (ma_tai_lieu) REFERENCES TaiLieu(ma_tai_lieu) ON DELETE RESTRICT
+);
+
 CREATE TABLE TacGia_TaiLieu (
     ma_tac_gia INT NOT NULL,
     ma_tai_lieu INT NOT NULL,
