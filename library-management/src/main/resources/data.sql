@@ -103,7 +103,7 @@ CREATE TABLE BanSao (
 );
 
 CREATE TABLE TheThuVien (
-    ma_the INT AUTO_INCREMENT PRIMARY KEY,
+    ma_the VARCHAR(50) PRIMARY KEY,
     ngay_phat_hanh DATETIME DEFAULT CURRENT_TIMESTAMP,
     ngay_het_han DATETIME NOT NULL,
     trang_thai ENUM('HOAT_DONG','HET_HAN') DEFAULT 'HOAT_DONG',
@@ -111,7 +111,7 @@ CREATE TABLE TheThuVien (
     ma_doc_gia INT NOT NULL,
     FOREIGN KEY (ma_goi_the) REFERENCES GoiThe(ma_goi_the) ON DELETE RESTRICT,
     FOREIGN KEY (ma_doc_gia) REFERENCES BanDoc(ma_doc_gia) ON DELETE CASCADE,
-    UNIQUE KEY uq_thethuvien_docgoi (ma_doc_gia, ma_goi_the)
+    UNIQUE KEY uq_thethuvien_docgia (ma_doc_gia)
 );
 
 CREATE TABLE PhieuMuon (
@@ -120,10 +120,9 @@ CREATE TABLE PhieuMuon (
     ngay_het_han DATETIME NOT NULL,
     trang_thai ENUM('DANG_MUON','DA_TRA','QUA_HAN') DEFAULT 'DANG_MUON',
     ma_nhan_vien INT NOT NULL,
-    ma_the INT NOT NULL,
+    ma_the VARCHAR(50) NOT NULL,
     FOREIGN KEY (ma_nhan_vien) REFERENCES NhanVien(ma_nhan_vien) ON DELETE RESTRICT,
-    FOREIGN KEY (ma_the) REFERENCES TheThuVien(ma_the) ON DELETE RESTRICT,
-    UNIQUE KEY uq_phieumuon_the_nhanvien (ma_the, ma_nhan_vien)
+    FOREIGN KEY (ma_the) REFERENCES TheThuVien(ma_the) ON DELETE RESTRICT
 );
 
 CREATE TABLE ChiTietPhieuMuon (
@@ -150,7 +149,7 @@ CREATE TABLE PhieuPhat (
     tien_phat BIGINT NOT NULL,
     ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
     trang_thai VARCHAR(50) DEFAULT 'CHUA_THANH_TOAN',
-    ma_the INT NOT NULL,
+    ma_the VARCHAR(50) NOT NULL,
     ma_chi_tiet_phieu_muon INT NOT NULL,
     ma_hoa_don INT NULL,
     FOREIGN KEY (ma_the) REFERENCES TheThuVien(ma_the) ON DELETE RESTRICT,

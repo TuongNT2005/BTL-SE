@@ -2,22 +2,21 @@ package com.example.librarymanagement.controller;
 
 import com.example.librarymanagement.entity.TacGia;
 import com.example.librarymanagement.service.TacGiaService;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import java.util.List;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/tacgia")
 public class TacGiaController {
 
     private final TacGiaService service;
-
-    public TacGiaController(TacGiaService service) {
-        this.service = service;
-    }
-
     @ExceptionHandler(Exception.class)
     public String handleError(Exception ex, Model model) {
         model.addAttribute("errorMessage", ex.getMessage());
@@ -40,6 +39,19 @@ public class TacGiaController {
     @PostMapping
     public String save(@ModelAttribute TacGia tacGia) {
         service.save(tacGia);
+        return "redirect:/tacgia";
+    }
+
+    @GetMapping("/update/{id}")
+    public String updateForm(@PathVariable Integer id, Model model) {
+        model.addAttribute("tacGia", service.findById(id));
+        model.addAttribute("isEdit", true);
+        return "tacgia/form";
+    }
+
+    @PostMapping("/update/{id}")
+    public String capNhat(@PathVariable Integer id, @ModelAttribute TacGia tacGia) {
+        service.capNhat(id, tacGia);
         return "redirect:/tacgia";
     }
 

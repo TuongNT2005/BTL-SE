@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang nhân viên</title>
+</head>
+<body>
+    <h1>Trang nhân viên</h1>
+    <p>Xin chào, <span th:text="${currentUser.ten}">Nhân viên</span></p>
+    <p>Tài khoản nhân viên đã đăng nhập. Các nghiệp vụ lập phiếu sẽ được mở từ màn hình này.</p>
+    <a th:href="@{/logout}">Đăng xuất</a>
+</body>
+</html>

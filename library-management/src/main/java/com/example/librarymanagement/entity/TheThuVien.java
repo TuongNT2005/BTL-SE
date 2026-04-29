@@ -11,9 +11,8 @@ import java.util.List;
 public class TheThuVien {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ma_the")
-    private Integer maThe;
+    @Column(name = "ma_the", length = 50)
+    private String maThe;
 
     @Column(name = "ngay_phat_hanh")
     private LocalDateTime ngayPhatHanh = LocalDateTime.now();
