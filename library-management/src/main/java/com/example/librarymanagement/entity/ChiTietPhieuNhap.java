@@ -8,16 +8,16 @@ import lombok.Data;
 @Data
 public class ChiTietPhieuNhap {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id; // surrogate key
+    @EmbeddedId
+    private ChiTietPhieuNhapId id;
 
     @ManyToOne
+    @MapsId("maPhieuNhap")
     @JoinColumn(name = "ma_phieu_nhap", referencedColumnName = "ma_phieu_nhap")
     private PhieuNhapKho phieuNhapKho;
 
     @ManyToOne
+    @MapsId("maTaiLieu")
     @JoinColumn(name = "ma_tai_lieu", referencedColumnName = "ma_tai_lieu")
     private TaiLieu taiLieu;
 

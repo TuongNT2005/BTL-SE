@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tao The Thu Vien</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        input, select { width: 100%; max-width: 480px; padding: 0.5rem; }
+        button { padding: 0.5rem 1rem; background: blue; color: white; border: none; }
+        .error { color: #d93025; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+<h2>Tạo thẻ thư viện</h2>
+
+<p class="error" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+
+<form th:action="@{/the-thu-vien/tao-the}" th:object="${taoTheRequest}" method="post">
+    <div class="form-group">
+        <label for="hoTen">Họ tên</label>
+        <input type="text" id="hoTen" th:field="*{hoTen}" required />
+    </div>
+
+    <div class="form-group">
+        <label for="diaChi">Địa chỉ</label>
+        <input type="text" id="diaChi" th:field="*{diaChi}" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" th:field="*{email}" />
+    </div>
+
+    <div class="form-group">
+        <label for="sdt">Số điện thoại</label>
+        <input type="text" id="sdt" th:field="*{sdt}" required />
+    </div>
+
+    <div class="form-group">
+        <label for="maGoiThe">Goi the</label>
+        <select id="maGoiThe" th:field="*{maGoiThe}" required>
+            <option value="">Chọn gói thẻ</option>
+            <option th:each="goi : ${listGoiThe}"
+                    th:value="${goi.maGoiThe}"
+                    th:text="${goi.ten}">
+            </option>
+        </select>
+    </div>
+
+    <button type="submit">Tạo thẻ</button>
+</form>
+</body>
+</html>

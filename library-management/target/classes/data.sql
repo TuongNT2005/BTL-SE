@@ -1,4 +1,3 @@
--- Database initialization script (generated from provided .txt)
 CREATE DATABASE IF NOT EXISTS QuanLyThuVien
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
@@ -135,4 +134,24 @@ CREATE TABLE PhieuPhat (
     FOREIGN KEY (ma_the) REFERENCES TheThuVien(ma_the) ON DELETE RESTRICT,
     FOREIGN KEY (ma_chi_tiet_phieu_muon) REFERENCES ChiTietPhieuMuon(ma_chi_tiet_phieu_muon) ON DELETE CASCADE,
     FOREIGN KEY (ma_hoa_don) REFERENCES HoaDon(ma_hoa_don) ON DELETE SET NULL
+);
+
+CREATE TABLE PhieuNhapKho (
+    ma_phieu_nhap INT AUTO_INCREMENT PRIMARY KEY,
+    ma_ncc INT NOT NULL,
+    ma_nhan_vien INT NOT NULL,
+    ngay_nhap DATETIME DEFAULT CURRENT_TIMESTAMP,
+    tong_tien DECIMAL(12, 2) DEFAULT 0.00,
+    FOREIGN KEY (ma_ncc) REFERENCES NhaCungCap(ma_ncc) ON DELETE RESTRICT,
+    FOREIGN KEY (ma_nhan_vien) REFERENCES NhanVien(ma_nhan_vien) ON DELETE RESTRICT
+);
+
+CREATE TABLE ChiTietPhieuNhap (
+    ma_phieu_nhap INT NOT NULL,
+    ma_tai_lieu INT NOT NULL,
+    so_luong INT NOT NULL DEFAULT 1,
+    don_gia DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    PRIMARY KEY (ma_phieu_nhap, ma_tai_lieu),
+    FOREIGN KEY (ma_phieu_nhap) REFERENCES PhieuNhapKho(ma_phieu_nhap) ON DELETE CASCADE,
+    FOREIGN KEY (ma_tai_lieu) REFERENCES TaiLieu(ma_tai_lieu) ON DELETE RESTRICT
 );

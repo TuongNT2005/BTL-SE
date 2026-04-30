@@ -1,0 +1,111 @@
+package com.example.librarymanagement.service;
+
+import com.example.librarymanagement.dto.GiaHanTheRequest;
+import com.example.librarymanagement.dto.TaoTheRequest;
+import com.example.librarymanagement.entity.BanDoc;
+import com.example.librarymanagement.entity.GoiThe;
+import com.example.librarymanagement.entity.TheThuVien;
+import com.example.librarymanagement.entity.TrangThaiThe;
+import com.example.librarymanagement.repository.ChiTietPhieuMuonRepository;
+import com.example.librarymanagement.repository.GoiTheRepository;
+import com.example.librarymanagement.repository.TheThuVienRepository;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class TheThuVienService {
+    private final TheThuVienRepository theThuVienRepository;
+    private final BanDocService banDocService;
+    private final GoiTheRepository goiTheRepository;
+    private final ChiTietPhieuMuonRepository chiTietPhieuMuonRepository;
+
+    public TheThuVienService(
+            TheThuVienRepository theThuVienRepository,
+            BanDocService banDocService,
+            GoiTheRepository goiTheRepository,
+            ChiTietPhieuMuonRepository chiTietPhieuMuonRepository) {
+        this.theThuVienRepository = theThuVienRepository;
+        this.banDocService = banDocService;
+        this.goiTheRepository = goiTheRepository;
+        this.chiTietPhieuMuonRepository = chiTietPhieuMuonRepository;
+    }
+
+    private void checkTaoTheConditions(TaoTheRequest request) {
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            throw new RuntimeException("Email không dược để trống!");
+        }
+
+        boolean daCoTheHoatDong = theThuVienRepository.existsByBanDoc_Email(
+                request.getEmail());
+
+        if (daCoTheHoatDong) {
+            throw new RuntimeException("Eamil này đã đăng ký cho 1 thẻ thư viện!");
+        }
+    }
+
+    public TheThuVien taoTheThuVien(TaoTheRequest request) {
+        checkTaoTheConditions(request);
+
+        BanDoc banDoc = banDocService.createBanDoc(request);
+        GoiThe goiThe = goiTheRepository.findById(request.getMaGoiThe())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy gói thẻ!"));
+
+        LocalDateTime ngayPhatHanh = LocalDateTime.now();
+        LocalDateTime ngayHetHan = ngayPhatHanh.plusMonths(goiThe.getThoiHan());
+
+        TheThuVien theThuVien = new TheThuVien();
+        theThuVien.setBanDoc(banDoc);
+        theThuVien.setGoiThe(goiThe);
+        theThuVien.setNgayPhatHanh(ngayPhatHanh);
+        theThuVien.setNgayHetHan(ngayHetHan);
+        theThuVien.setTrangThai(TrangThaiThe.HOAT_DONG);
+
+        return theThuVienRepository.save(theThuVien);
+    }
+
+    public List<TheThuVien> getAll() {
+        return theThuVienRepository.findAll();
+    }
+
+    public TheThuVien getTheById(Integer theId) {
+        if (theId == null) {
+            throw new RuntimeException("Mã thẻ không được để trống!");
+        }
+        return theThuVienRepository.findById(theId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thẻ thư viện!"));
+    }
+
+    public long getBanSaoChuaTraByTheId(Integer theId) {
+        getTheById(theId);
+        return chiTietPhieuMuonRepository.countChuaTraByMaThe(theId);
+    }
+
+    public void checkGiaHanTheConditions(GiaHanTheRequest request) {
+        if (request == null || request.getMaThe() == null || request.getMaThe().isBlank()) {
+            throw new RuntimeException("Thông tin trống!");
+        }
+        if (request.getSoThangGiaHan() == null) {
+            throw new RuntimeException("Thông tin trống!");
+        }
+
+        theThuVienRepository.findByMaThe(Integer.valueOf(request.getMaThe()))
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thẻ thư viện!"));
+    }
+
+    public boolean giaHanThe(GiaHanTheRequest request) {
+        
+
+        TheThuVien the = theThuVienRepository.findByMaThe(Integer.parseInt(request.getMaThe())).get();
+        if (the == null || the.getNgayHetHan() == null) {
+            return false;
+        }
+
+        LocalDateTime ngayHetHanMoi = the.getNgayHetHan().plusMonths(request.getSoThangGiaHan());
+        the.setNgayHetHan(ngayHetHanMoi);
+        theThuVienRepository.save(the);
+        return true;
+    }
+
+}

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lập phiếu mượn sách</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        h2,
+        h3 {
+            margin-top: 0;
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        label {
+            min-width: 170px;
+            font-weight: bold;
+        }
+
+        input,
+        button {
+            padding: 8px 10px;
+            font-size: 14px;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            background: #0d6efd;
+            color: white;
+        }
+
+        button:hover {
+            background: #0b5ed7;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #bb2d3b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f1f1;
+        }
+
+        .scroll-box {
+            max-height: 320px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+
+        .text-error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .text-success {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Lập phiếu mượn sách</h2>
+        <p class="text-success" th:if="${successMessage != null}" th:text="${successMessage}">
+        </p>
+        <p class="text-error" th:if="${errorMessage != null}" th:text="${errorMessage}">
+        </p>
+
+        <!-- Tìm bạn đọc -->
+        <div class="card">
+            <form th:action="@{/muon-tra/thong-tin-ban-doc}" method="get">
+                <div class="row">
+                    <label>Mã thẻ thư viện:</label>
+                    <input type="number" name="theId" required
+                        th:value="${lapPhieuMuonRequest != null ? lapPhieuMuonRequest.theId : ''}">
+                    <button type="submit">
+                        Hiển thị thông tin bạn đọc
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="card" th:if="${theThuVien != null}">
+            <h3>Thông tin bạn đọc</h3>
+            <p><b>Mã thẻ:</b>
+                <span th:text="${theThuVien.maThe}"></span>
+            </p>
+            <p><b>Họ tên:</b>
+                <span th:text="${theThuVien.banDoc != null ? theThuVien.banDoc.hoTen : ''}"></span>
+            </p>
+            <p><b>Email:</b>
+                <span th:text="${theThuVien.banDoc != null ? theThuVien.banDoc.email : ''}"></span>
+            </p>
+            <p><b>Số sách chưa trả:</b>
+                <span th:text="${soSachChuaTra != null ? soSachChuaTra : 0}"></span>
+            </p>
+        </div>
+
+        <!-- Danh sách bản sao -->
+        <div class="card">
+            <h3>Danh sách bản sao hiện có</h3>
+
+            <div class="scroll-box">
+                <table id="dsBanSaoTable">
+                    <thead>
+                        <tr>
+                            <th>Mã bản sao</th>
+                            <th>Tài liệu</th>
+                            <th>Trạng thái</th>
+                            <th>Tình trạng</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="banSao : ${dsBanSao}"
+                            th:attr="data-id=${banSao.maBanSao},data-trang-thai=${banSao.trangThaiLuuThong},data-ten=${banSao.taiLieu != null ? banSao.taiLieu.tenTl : ''}">
+                            <td th:text="${banSao.maBanSao}"></td>
+                            <td th:text="${banSao.taiLieu != null ? banSao.taiLieu.tenTl : ''}"></td>
+                            <td th:text="${banSao.trangThaiLuuThong}"></td>
+                            <td th:text="${banSao.tinhTrangVatLy}"></td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Nhập thông tin lập phiếu</h3>
+            <form th:action="@{/muon-tra/lap-phieu-muon}" th:object="${lapPhieuMuonRequest}" method="post">
+                <div class="row">
+                    <label>Mã thẻ thư viện:</label>
+                    <input type="number" th:field="*{theId}" required>
+                </div>
+                <div class="row">
+                    <label>Mã nhân viên:</label>
+                    <input type="number" th:field="*{maNhanVien}" readonly>
+                </div>
+                <hr>
+
+                <div class="row">
+                    <label>Nhập mã bản sao:</label>
+                    <input type="number" id="inputBanSaoId" placeholder="Nhập mã rồi Enter">
+                    <button type="button" id="btnThemBanSao">
+                        Thêm
+                    </button>
+                </div>
+               
+                <h3>Danh sách sẽ mượn</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Tài liệu</th>
+                            <th>Trạng thái</th>
+                            <th>Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="borrowList"></tbody>
+                </table>
+                <br>
+                <button type="submit">
+                    Xác nhận lập phiếu mượn
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        const dsBanSao = Array.from(document.querySelectorAll("#dsBanSaoTable tbody tr")).map(function (row) {
+            return {
+                maBanSao: row.dataset.id,
+                trangThaiLuuThong: row.dataset.trangThai,
+                tenTl: row.dataset.ten || ""
+            };
+        });
+        let selectedIds = [];
+
+        function themBanSao() {
+
+            let input = document.getElementById("inputBanSaoId");
+            let id = input.value.trim();
+            if (id === "") return;
+            let item = dsBanSao.find(x => x.maBanSao == id);
+            if (!item) {
+                alert("Không tìm thấy mã bản sao!");
+                return;
+            }
+            if (selectedIds.includes(id)) {
+                alert("Bản sao đã được thêm!");
+                return;
+            }
+            if (item.trangThaiLuuThong !== 'SAN_SANG') {
+                alert("Bản sao không sẵn sàng để mượn!");
+                return;
+            }
+            selectedIds.push(id);
+            let tenTaiLieu = item.tenTl ? item.tenTl : '';
+            let row = `
+            <tr id="row-${id}">
+                <td>${item.maBanSao}</td>
+                <td>${tenTaiLieu}</td>
+                <td>${item.trangThaiLuuThong}</td>
+                <td>
+                    <button type="button"
+                            class="btn-danger"
+                            onclick="xoaBanSao('${id}')">
+                        Xóa
+                    </button>
+
+                    <input type="hidden"
+                           name="dsBanSaoId"
+                           value="${id}">
+                </td>
+            </tr>
+        `;
+            document.getElementById("borrowList").insertAdjacentHTML("beforeend", row);
+
+            input.value = "";
+            input.focus();
+        }
+
+        function xoaBanSao(id) {
+            selectedIds = selectedIds.filter(x => x != id);
+            let row = document.getElementById("row-" + id);
+            if (row) row.remove();
+        }
+
+        document.getElementById("btnThemBanSao")?.addEventListener("click", themBanSao);
+        document.getElementById("inputBanSaoId")?.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                themBanSao();
+            }
+        });
+    </script>
+
+</body>
+
+</html>
