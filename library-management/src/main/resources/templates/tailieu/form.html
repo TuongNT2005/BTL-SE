@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isEdit} ? 'Cap nhat tai lieu' : 'Them moi tai lieu'"></title>
+    <style>
+        body {font-family: Arial, sans-serif; margin: 2rem;}
+        .form-group {margin-bottom: 1rem;}
+        label {display: block; margin-bottom: 0.5rem;}
+        input, textarea, select {width: 100%; padding: 0.5rem;}
+        button {padding: 0.5rem 1rem; background:#28a745; color:#fff; border:none;}
+        table {border-collapse: collapse; width: 100%; margin: 1rem 0;}
+        th, td {border: 1px solid #ddd; padding: 0.5rem; text-align: left;}
+        th {background: #f4f4f4;}
+        .copy-form {display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.75rem; align-items: end;}
+        .copy-form label {font-size: 0.9rem;}
+        .empty {color: #666;}
+    </style>
+</head>
+<body>
+<h2 th:text="${isEdit} ? 'Cap nhat tai lieu' : 'Them moi tai lieu'"></h2>
+<form th:action="${isEdit} ? @{/tailieu/update/{id}(id=${taiLieu.maTaiLieu})} : @{/tailieu}" th:object="${taiLieu}" method="post">
+    <input type="hidden" th:field="*{maTaiLieu}"/>
+    <div class="form-group">
+        <label for="tenTl">Tên tài liệu</label>
+        <input type="text" id="tenTl" th:field="*{tenTl}" required/>
+    </div>
+    <div class="form-group">
+        <label for="isbn">ISBN</label>
+        <input type="text" id="isbn" th:field="*{isbn}"/>
+    </div>
+    <div class="form-group">
+        <label for="theLoai">Thể loại</label>
+        <select id="theLoai" th:field="*{theLoai}">
+            <option value="">-- Chọn thể loại --</option>
+            <option th:each="theLoai : ${theLoais}"
+                    th:value="${theLoai}"
+                    th:text="${theLoai}">
+                THE_LOAI
+            </option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="nhaXuatBan">Nhà xuất bản</label>
+        <select id="nhaXuatBan" th:field="*{nhaXuatBan.maNxb}" required>
+            <option value="">-- Chọn nhà xuất bản --</option>
+            <option th:each="nxb : ${nhaXuatBans}"
+                    th:value="${nxb.maNxb}"
+                    th:text="${nxb.ten}">
+                NXB
+            </option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="moTa">Mô tả</label>
+        <textarea id="moTa" th:field="*{moTa}" rows="4"></textarea>
+    </div>
+    <button type="submit" th:text="${isEdit} ? 'Cap nhat' : 'Luu'"></button>
+</form>
+
+<section th:if="${isEdit}">
+    <h3>Trạng thái bản sao</h3>
+    <p class="empty" th:if="${#lists.isEmpty(banSaos)}">Tài liệu này chưa có bản sao.</p>
+
+    <table th:if="${!#lists.isEmpty(banSaos)}">
+        <tr>
+            <th>Mã bản sao</th>
+            <th>Cập nhật trạng thái</th>
+        </tr>
+        <tr th:each="banSao : ${banSaos}">
+            <td th:text="${banSao.maBanSao}">1</td>
+            <td>
+                <form class="copy-form"
+                      th:action="@{/tailieu/update/{taiLieuId}/bansao/{banSaoId}(taiLieuId=${taiLieu.maTaiLieu},banSaoId=${banSao.maBanSao})}"
+                      method="post">
+                    <label>
+                        Tình trạng vật lý
+                        <select name="tinhTrangVatLy" required>
+                            <option th:each="tinhTrang : ${tinhTrangVatLys}"
+                                    th:value="${tinhTrang}"
+                                    th:selected="${tinhTrang == banSao.tinhTrangVatLy}"
+                                    th:text="${tinhTrang}">
+                                TINH_TRANG
+                            </option>
+                        </select>
+                    </label>
+                    <label>
+                        Trạng thái lưu thông
+                        <select name="trangThaiLuuThong" required>
+                            <option th:each="trangThai : ${trangThaiLuuThongs}"
+                                    th:value="${trangThai}"
+                                    th:selected="${trangThai == banSao.trangThaiLuuThong}"
+                                    th:text="${trangThai}">
+                                TRANG_THAI
+                            </option>
+                        </select>
+                    </label>
+                    <button type="submit">Lưu bản sao</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+</section>
+
+<a th:href="@{/tailieu}">Quay lại danh sách</a>
+</body>
+</html>

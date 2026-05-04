@@ -13,6 +13,7 @@
             <th>Tên</th>
             <th>Địa chỉ</th>
             <th>Số điện thoại</th>
+            <th>Hành động</th>
         </tr>
         <tr th:each="nxb : ${nhaXuatBans}">
             <td th:text="${nxb.maNxb}">1</td>
@@ -25,5 +26,6 @@
             </td>
         </tr>
     </table>
+    <p><a th:href="@{/quanly}">Quay lại trang quản lý</a></p>
 </body>
 </html>

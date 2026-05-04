@@ -5,46 +5,47 @@
     <title>Đăng nhập</title>
     <style>
         body {font-family: Arial, sans-serif; margin: 2rem;}
-        .login-grid {display: grid; grid-template-columns: repeat(2, minmax(280px, 1fr)); gap: 1.5rem; max-width: 900px;}
-        .panel {border: 1px solid #ddd; padding: 1rem;}
+        .panel {border: 1px solid #ddd; padding: 1rem; max-width: 420px;}
         .form-group {margin-bottom: 1rem;}
         label {display: block; margin-bottom: 0.5rem;}
         input {width: 100%; padding: 0.5rem; box-sizing: border-box;}
         button {padding: 0.5rem 1rem; background: #0d6efd; color: #fff; border: none;}
+        .switch-link {display: inline-block; margin-top: 1rem;}
     </style>
 </head>
 <body>
 <h1>Đăng nhập hệ thống thư viện</h1>
-<div class="login-grid">
-    <div class="panel">
-        <h2>Bạn đọc</h2>
-        <form th:action="@{/login/bandoc}" method="post">
-            <div class="form-group">
-                <label for="readerEmail">Email</label>
-                <input type="email" id="readerEmail" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="readerPhone">Số điện thoại</label>
-                <input type="text" id="readerPhone" name="sdt" required>
-            </div>
-            <button type="submit">Đăng nhập bạn đọc</button>
-        </form>
-    </div>
 
-    <div class="panel">
-        <h2>Nhân viên</h2>
-        <form th:action="@{/login/nhanvien}" method="post">
-            <div class="form-group">
-                <label for="staffPhone">Số điện thoại</label>
-                <input type="text" id="staffPhone" name="sdt" required>
-            </div>
-            <div class="form-group">
-                <label for="staffPassword">Mật khẩu</label>
-                <input type="password" id="staffPassword" name="matKhau" required>
-            </div>
-            <button type="submit">Đăng nhập nhân viên</button>
-        </form>
-    </div>
+<div class="panel" th:if="${param.role == null || param.role[0] != 'nhanvien'}">
+    <h2>Bạn đọc</h2>
+    <form th:action="@{/login/bandoc}" method="post">
+        <div class="form-group">
+            <label for="readerEmail">Email</label>
+            <input type="email" id="readerEmail" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="readerPhone">Số điện thoại</label>
+            <input type="text" id="readerPhone" name="sdt" required>
+        </div>
+        <button type="submit">Đăng nhập bạn đọc</button>
+    </form>
+    <a class="switch-link" th:href="@{/login(role='nhanvien')}">Đăng nhập với tư cách nhân viên</a>
+</div>
+
+<div class="panel" th:if="${param.role != null && param.role[0] == 'nhanvien'}">
+    <h2>Nhân viên</h2>
+    <form th:action="@{/login/nhanvien}" method="post">
+        <div class="form-group">
+            <label for="staffPhone">Số điện thoại</label>
+            <input type="text" id="staffPhone" name="sdt" required>
+        </div>
+        <div class="form-group">
+            <label for="staffPassword">Mật khẩu</label>
+            <input type="password" id="staffPassword" name="matKhau" required>
+        </div>
+        <button type="submit">Đăng nhập nhân viên</button>
+    </form>
+    <a class="switch-link" th:href="@{/login}">Đăng nhập với tư cách bạn đọc</a>
 </div>
 </body>
 </html>

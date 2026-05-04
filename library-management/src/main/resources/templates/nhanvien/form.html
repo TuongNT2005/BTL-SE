@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isEdit} ? 'Cap nhat nhan vien' : 'Them moi nhan vien'"></title>
+    <style>
+        body {font-family: Arial, sans-serif; margin: 2rem;}
+        .form-group {margin-bottom: 1rem;}
+        label {display: block; margin-bottom: 0.5rem;}
+        input {padding: 0.5rem;}
+        input[type="text"], input[type="password"] {width: 100%;}
+        button {padding: 0.5rem 1rem; background:#28a745; color:#fff; border:none;}
+        .hint {color:#666; font-size: 0.9rem;}
+    </style>
+</head>
+<body>
+<h2 th:text="${isEdit} ? 'Cap nhat nhan vien' : 'Them moi nhan vien'"></h2>
+<form th:action="${isEdit} ? @{/nhanvien/quanly/update/{id}(id=${nhanVien.maNhanVien})} : @{/nhanvien/quanly}" th:object="${nhanVien}" method="post">
+    <input type="hidden" th:field="*{maNhanVien}"/>
+    <div class="form-group">
+        <label for="ten">Tên nhân viên</label>
+        <input type="text" id="ten" th:field="*{ten}" required/>
+    </div>
+    <div class="form-group">
+        <label for="sdt">Số điện thoại</label>
+        <input type="text" id="sdt" th:field="*{sdt}" required/>
+    </div>
+    <div class="form-group">
+        <label for="matKhau">Mật khẩu</label>
+        <input type="password" id="matKhau" name="matKhau" th:required="${!isEdit}"/>
+        <div class="hint" th:if="${isEdit}">Bỏ trống nếu không đổi mật khẩu.</div>
+    </div>
+    <div class="form-group">
+        <label>
+            <input type="checkbox" th:field="*{trangThaiLamViec}"/>
+            Đang làm việc
+        </label>
+    </div>
+    <button type="submit" th:text="${isEdit} ? 'Cap nhat' : 'Luu'"></button>
+</form>
+<a th:href="@{/nhanvien/quanly}">Quay lại danh sách</a>
+</body>
+</html>

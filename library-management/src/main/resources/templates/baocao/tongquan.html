@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bao cao tong quan</title>
+    <style>
+        body {font-family: Arial, sans-serif; margin: 2rem; color: #222;}
+        h1 {margin-bottom: 0.5rem;}
+        .grid {display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0;}
+        .card {border: 1px solid #ddd; border-radius: 6px; padding: 1rem; background: #fff;}
+        .card h2 {font-size: 1rem; margin: 0 0 0.75rem;}
+        .metric {display: flex; justify-content: space-between; gap: 1rem; padding: 0.4rem 0; border-bottom: 1px solid #eee;}
+        .metric:last-child {border-bottom: none;}
+        .value {font-weight: bold;}
+        a {display: inline-block; margin-top: 1rem;}
+    </style>
+</head>
+<body>
+    <h1>Báo cáo tổng quan</h1>
+
+    <div class="grid">
+        <section class="card">
+            <h2>Người dùng</h2>
+            <div class="metric"><span>Bạn đọc</span><span class="value" th:text="${baoCao.tongBanDoc}">0</span></div>
+            <div class="metric"><span>Nhân viên</span><span class="value" th:text="${baoCao.tongNhanVien}">0</span></div>
+            <div class="metric"><span>Nhân viên đang làm</span><span class="value" th:text="${baoCao.nhanVienDangLamViec}">0</span></div>
+        </section>
+
+        <section class="card">
+            <h2>Tài liệu</h2>
+            <div class="metric"><span>Đầu tài liệu</span><span class="value" th:text="${baoCao.tongTaiLieu}">0</span></div>
+            <div class="metric"><span>Bản sao</span><span class="value" th:text="${baoCao.tongBanSao}">0</span></div>
+            <div class="metric"><span>Sẵn sàng</span><span class="value" th:text="${baoCao.banSaoSanSang}">0</span></div>
+            <div class="metric"><span>Đang mượn</span><span class="value" th:text="${baoCao.banSaoDangMuon}">0</span></div>
+        </section>
+
+        <section class="card">
+            <h2>Tình trạng vật lý</h2>
+            <div class="metric"><span>Hư hỏng</span><span class="value" th:text="${baoCao.banSaoHuHong}">0</span></div>
+            <div class="metric"><span>Mất</span><span class="value" th:text="${baoCao.banSaoMat}">0</span></div>
+        </section>
+
+        <section class="card">
+            <h2>Phiếu mượn</h2>
+            <div class="metric"><span>Tổng phiếu</span><span class="value" th:text="${baoCao.tongPhieuMuon}">0</span></div>
+            <div class="metric"><span>Đang mượn</span><span class="value" th:text="${baoCao.phieuDangMuon}">0</span></div>
+            <div class="metric"><span>Đã trả</span><span class="value" th:text="${baoCao.phieuDaTra}">0</span></div>
+            <div class="metric"><span>Quá hạn</span><span class="value" th:text="${baoCao.phieuQuaHan}">0</span></div>
+        </section>
+
+        <section class="card">
+            <h2>Phạt và hóa đơn</h2>
+            <div class="metric"><span>Phiếu phạt</span><span class="value" th:text="${baoCao.tongPhieuPhat}">0</span></div>
+            <div class="metric"><span>Hóa đơn chưa thanh toán</span><span class="value" th:text="${baoCao.hoaDonChuaThanhToan}">0</span></div>
+            <div class="metric"><span>Tổng tiền phạt</span><span class="value" th:text="${baoCao.tongTienPhat}">0</span></div>
+            <div class="metric"><span>Hóa đơn</span><span class="value" th:text="${baoCao.tongHoaDon}">0</span></div>
+            <div class="metric"><span>Đã thu</span><span class="value" th:text="${baoCao.tongTienDaThu}">0</span></div>
+        </section>
+
+        <section class="card">
+            <h2>Nhập kho</h2>
+            <div class="metric"><span>Phiếu nhập</span><span class="value" th:text="${baoCao.tongPhieuNhap}">0</span></div>
+            <div class="metric"><span>Tổng tiền nhập</span><span class="value" th:text="${baoCao.tongTienNhap}">0</span></div>
+        </section>
+    </div>
+
+    <a th:href="@{/quanly}">Quay lại trang quản lý</a>
+</body>
+</html>

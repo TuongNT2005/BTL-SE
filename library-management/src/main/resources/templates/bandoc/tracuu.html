@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tra cuu tai lieu</title>
+    <style>
+        body {font-family: Arial, sans-serif; margin: 2rem;}
+        form {margin-bottom: 1rem;}
+        input {padding: 0.5rem; min-width: 280px;}
+        button {padding: 0.5rem 1rem;}
+        table {border-collapse: collapse; width: 100%;}
+        th, td {border: 1px solid #ddd; padding: 0.5rem; text-align: left; vertical-align: top;}
+        th {background: #f4f4f4;}
+        .empty {color: #666;}
+    </style>
+</head>
+<body>
+    <h1>Tra cứu tài liệu</h1>
+
+    <form th:action="@{/bandoc/tracuu}" method="get">
+        <input type="text" name="keyword" th:value="${keyword}" placeholder="Nhap ten tai lieu, ISBN hoac NXB"/>
+        <button type="submit">Tìm kiếm</button>
+        <a th:href="@{/bandoc/tracuu}">Xem tất cả</a>
+    </form>
+
+    <p class="empty" th:if="${#lists.isEmpty(taiLieus)}">Không tìm thấy tài liệu phù hợp.</p>
+
+    <table th:if="${!#lists.isEmpty(taiLieus)}">
+        <tr>
+            <th>ID</th>
+            <th>Tên tài liệu</th>
+            <th>ISBN</th>
+            <th>Thể loại</th>
+            <th>Nhà xuất bản</th>
+            <th>Mô tả</th>
+        </tr>
+        <tr th:each="taiLieu : ${taiLieus}">
+            <td th:text="${taiLieu.maTaiLieu}">1</td>
+            <td th:text="${taiLieu.tenTl}">Ten tai lieu</td>
+            <td th:text="${taiLieu.isbn}">ISBN</td>
+            <td th:text="${taiLieu.theLoai}">The loai</td>
+            <td th:text="${taiLieu.nhaXuatBan != null ? taiLieu.nhaXuatBan.ten : ''}">NXB</td>
+            <td th:text="${taiLieu.moTa}">Mo ta</td>
+        </tr>
+    </table>
+
+    <a th:href="@{/bandoc}">Quay lại trang bạn đọc</a>
+</body>
+</html>

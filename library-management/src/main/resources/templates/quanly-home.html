@@ -8,6 +8,9 @@
     <h1>Trang quản lý</h1>
     <p>Xin chào, <span th:text="${currentUser.ten}">Quản lý</span></p>
     <ul>
+        <li><a th:href="@{/quanly/baocao}">Xem báo cáo</a></li>
+        <li><a th:href="@{/nhanvien/quanly}">Tạo/sửa thông tin nhân viên</a></li>
+        <li><a th:href="@{/tailieu}">Thêm/sửa/xóa tài liệu</a></li>
         <li><a th:href="@{/NXB}">Thêm/sửa/xóa nhà xuất bản</a></li>
         <li><a th:href="@{/tacgia}">Thêm/sửa/xóa tác giả</a></li>
         <li><a th:href="@{/nhacungcap}">Thêm/sửa/xóa nhà cung cấp</a></li>

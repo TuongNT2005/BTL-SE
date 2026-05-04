@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sach nhan vien</title>
+</head>
+<body>
+    <h1>Danh sách nhân viên</h1>
+    <a th:href="@{/nhanvien/quanly/new}">Thêm mới</a>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Số điện thoại</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+        </tr>
+        <tr th:each="nhanVien : ${nhanViens}">
+            <td th:text="${nhanVien.maNhanVien}">1</td>
+            <td th:text="${nhanVien.ten}">Ten</td>
+            <td th:text="${nhanVien.sdt}">Sdt</td>
+            <td th:text="${nhanVien.trangThaiLamViec == true ? 'Dang lam viec' : 'Tam dung'}">Trang thai</td>
+            <td>
+                <a th:href="@{'/nhanvien/quanly/update/' + ${nhanVien.maNhanVien}}">Sửa</a>
+            </td>
+        </tr>
+    </table>
+    <p><a th:href="@{/quanly}">Quay lại trang quản lý</a></p>
+</body>
+</html>

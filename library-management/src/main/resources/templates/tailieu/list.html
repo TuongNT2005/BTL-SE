@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sach tai lieu</title>
+</head>
+<body>
+    <h1>Danh sách tài liệu</h1>
+    <a th:href="@{/tailieu/new}">Thêm mới</a>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Tên tài liệu</th>
+            <th>ISBN</th>
+            <th>Thể loại</th>
+            <th>Nhà xuất bản</th>
+            <th>Mô tả</th>
+            <th>Thao tác</th>
+        </tr>
+        <tr th:each="taiLieu : ${taiLieus}">
+            <td th:text="${taiLieu.maTaiLieu}">1</td>
+            <td th:text="${taiLieu.tenTl}">Ten tai lieu</td>
+            <td th:text="${taiLieu.isbn}">ISBN</td>
+            <td th:text="${taiLieu.theLoai}">The loai</td>
+            <td th:text="${taiLieu.nhaXuatBan != null ? taiLieu.nhaXuatBan.ten : ''}">NXB</td>
+            <td th:text="${taiLieu.moTa}">Mo ta</td>
+            <td>
+                <a th:href="@{'/tailieu/delete/' + ${taiLieu.maTaiLieu}}"
+                   onclick="return confirm('Ban co chac muon xoa tai lieu nay?')">Xóa</a>
+                <a th:href="@{'/tailieu/update/' + ${taiLieu.maTaiLieu}}">Sửa</a>
+            </td>
+        </tr>
+    </table>
+    <p><a th:href="@{/quanly}">Quay lại trang quản lý</a></p>
+</body>
+</html>

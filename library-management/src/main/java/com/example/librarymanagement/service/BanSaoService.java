@@ -1,6 +1,8 @@
 package com.example.librarymanagement.service;
 
 import com.example.librarymanagement.entity.BanSao;
+import com.example.librarymanagement.entity.TinhTrangVatLy;
+import com.example.librarymanagement.entity.TrangThaiLuuThong;
 import com.example.librarymanagement.repository.BanSaoRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +30,32 @@ public class BanSaoService {
 
     public List<BanSao> getAllBanSaoChuaTraByTheId(String theId) {
         return banSaoRepository.findAllBanSaoChuaTraByMaThe(theId);
+    }
+
+    public List<BanSao> findByTaiLieuId(Integer maTaiLieu) {
+        return banSaoRepository.findByTaiLieu_MaTaiLieuOrderByMaBanSaoAsc(maTaiLieu);
+    }
+
+    public BanSao capNhatTrangThai(Integer maBanSao, TinhTrangVatLy tinhTrangVatLy,
+            TrangThaiLuuThong trangThaiLuuThong) {
+        BanSao banSao = getBanSaoById(maBanSao);
+        return capNhatTrangThai(banSao, tinhTrangVatLy, trangThaiLuuThong);
+    }
+
+    public BanSao capNhatTrangThaiCuaTaiLieu(Integer maTaiLieu, Integer maBanSao, TinhTrangVatLy tinhTrangVatLy,
+            TrangThaiLuuThong trangThaiLuuThong) {
+        BanSao banSao = getBanSaoById(maBanSao);
+        Integer taiLieuId = banSao.getTaiLieu() == null ? null : banSao.getTaiLieu().getMaTaiLieu();
+        if (!maTaiLieu.equals(taiLieuId)) {
+            throw new RuntimeException("Ban sao khong thuoc tai lieu dang cap nhat");
+        }
+        return capNhatTrangThai(banSao, tinhTrangVatLy, trangThaiLuuThong);
+    }
+
+    private BanSao capNhatTrangThai(BanSao banSao, TinhTrangVatLy tinhTrangVatLy,
+            TrangThaiLuuThong trangThaiLuuThong) {
+        banSao.setTinhTrangVatLy(tinhTrangVatLy);
+        banSao.setTrangThaiLuuThong(trangThaiLuuThong);
+        return banSaoRepository.save(banSao);
     }
 }

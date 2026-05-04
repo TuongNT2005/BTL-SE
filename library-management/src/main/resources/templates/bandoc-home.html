@@ -8,6 +8,10 @@
     <h1>Trang bạn đọc</h1>
     <p>Xin chào, <span th:text="${currentUser.ten}">Bạn đọc</span></p>
     <p>Bạn đọc đã đăng nhập bằng email và số điện thoại.</p>
+    <ul>
+        <li><a th:href="@{/bandoc/lichsu}">Xem lịch sử mượn trả</a></li>
+        <li><a th:href="@{/bandoc/tracuu}">Tra cứu tài liệu</a></li>
+    </ul>
     <a th:href="@{/logout}">Đăng xuất</a>
 </body>
 </html>

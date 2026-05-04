@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lich su muon tra</title>
+    <style>
+        body {font-family: Arial, sans-serif; margin: 2rem;}
+        table {border-collapse: collapse; width: 100%; margin: 1rem 0 2rem;}
+        th, td {border: 1px solid #ddd; padding: 0.5rem; text-align: left; vertical-align: top;}
+        th {background: #f4f4f4;}
+        .empty {color: #666;}
+    </style>
+</head>
+<body>
+    <h1>Lịch sử mượn trả</h1>
+    <p>Bạn đọc: <span th:text="${currentUser.ten}">Ban doc</span></p>
+
+    <p class="empty" th:if="${#lists.isEmpty(phieuMuons)}">Chưa có lịch sử mượn trả.</p>
+
+    <div th:each="phieuMuon : ${phieuMuons}">
+        <h3>
+            Phiếu mượn #
+            <span th:text="${phieuMuon.maPhieuMuon}">1</span>
+        </h3>
+        <table>
+            <tr>
+                <th>Ngày mượn</th>
+                <th>Hạn trả</th>
+                <th>Trạng thái</th>
+                <th>Mã thẻ</th>
+            </tr>
+            <tr>
+                <td th:text="${phieuMuon.ngayMuon}">Ngay muon</td>
+                <td th:text="${phieuMuon.ngayHetHan}">Han tra</td>
+                <td th:text="${phieuMuon.trangThai}">Trang thai</td>
+                <td th:text="${phieuMuon.theThuVien != null ? phieuMuon.theThuVien.maThe : ''}">Ma the</td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <th>Tài liệu</th>
+                <th>Mã bản sao</th>
+                <th>Ngày trả</th>
+                <th>Tình trạng khi trả</th>
+            </tr>
+            <tr th:each="chiTiet : ${phieuMuon.chiTietPhieuMuons}">
+                <td th:text="${chiTiet.banSao != null && chiTiet.banSao.taiLieu != null ? chiTiet.banSao.taiLieu.tenTl : ''}">Tai lieu</td>
+                <td th:text="${chiTiet.banSao != null ? chiTiet.banSao.maBanSao : ''}">Ban sao</td>
+                <td th:text="${chiTiet.ngayTra != null ? chiTiet.ngayTra : 'Chua tra'}">Ngay tra</td>
+                <td th:text="${chiTiet.tinhTrangVatLy != null ? chiTiet.tinhTrangVatLy : ''}">Tinh trang</td>
+            </tr>
+        </table>
+    </div>
+
+    <a th:href="@{/bandoc}">Quay lại trang bạn đọc</a>
+</body>
+</html>
