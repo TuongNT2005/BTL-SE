@@ -17,6 +17,7 @@ import java.util.List;
 public class TacGiaController {
 
     private final TacGiaService service;
+
     @ExceptionHandler(Exception.class)
     public String handleError(Exception ex, Model model) {
         model.addAttribute("errorMessage", ex.getMessage());

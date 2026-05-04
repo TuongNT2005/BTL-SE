@@ -10,14 +10,14 @@ import com.example.librarymanagement.repository.PhieuMuonRepository;
 
 import lombok.RequiredArgsConstructor;
 
-
 @Service
 @RequiredArgsConstructor
 public class PhieuMuonService {
     private final PhieuMuonRepository phieuMuonRepository;
 
     public List<PhieuMuon> getAllPhieuMuonChuaTraByMaThe(String maThe) {
-        // return phieuMuonRepository.findByTheThuVien_MaTheAndTrangThaiNot(maThe, TrangThaiPhieuMuon.DANG_MUON);
+        // return phieuMuonRepository.findByTheThuVien_MaTheAndTrangThaiNot(maThe,
+        // TrangThaiPhieuMuon.DANG_MUON);
         return phieuMuonRepository.findByTheThuVien_MaTheAndTrangThaiNot(maThe, TrangThaiPhieuMuon.DA_TRA);
     }
 

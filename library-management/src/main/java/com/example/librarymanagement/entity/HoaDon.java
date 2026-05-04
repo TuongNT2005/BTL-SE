@@ -25,9 +25,13 @@ public class HoaDon {
     @Column(name = "trang_thai")
     private TrangThaiHoaDon trangThai; 
 
-    @ManyToOne
+@ManyToOne
     @JoinColumn(name = "ma_nhan_vien", referencedColumnName = "ma_nhan_vien")
     private NhanVien nguoiThu;
+
+    @ManyToOne
+    @JoinColumn(name = "ma_the", referencedColumnName = "ma_the")
+    private TheThuVien theThuVien;
 
     @OneToMany(mappedBy = "hoaDon")
     private List<PhieuPhat> phieuPhats;

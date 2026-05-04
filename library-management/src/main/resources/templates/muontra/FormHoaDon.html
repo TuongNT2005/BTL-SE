@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán hóa đơn</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            color: #000;
+            background: #fff;
+            margin: 1rem;
+            line-height: 1.4;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .msg {
+            margin: 0.75rem 0;
+        }
+
+        form {
+            margin: 0.75rem 0;
+        }
+
+        label {
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        input[type="text"] {
+            color: #000;
+            background: #fff;
+            border: 1px solid #000;
+            padding: 0.25rem 0.35rem;
+        }
+
+        button {
+            color: #000;
+            background: #fff;
+            border: 1px solid #000;
+            padding: 0.35rem 0.75rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 64rem;
+            margin: 0.5rem 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 0.35rem 0.5rem;
+            vertical-align: top;
+        }
+
+        fieldset {
+            border: 1px solid #000;
+            margin: 1rem 0;
+            padding: 0.75rem 1rem;
+            max-width: 68rem;
+        }
+
+        legend {
+            padding: 0 0.35rem;
+            font-weight: bold;
+        }
+
+        a {
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Thanh toán hóa đơn</h1>
+
+    <p th:if="${successMessage}" class="msg" th:text="${successMessage}"></p>
+    <p th:if="${errorMessage}" class="msg" th:text="${errorMessage}"></p>
+
+    <p>Nhập mã thẻ thư viện để xem các hóa đơn chưa thanh toán.</p>
+    <form th:action="@{/muon-tra/hoa-don/tim}" method="post">
+        <label for="maThe">Mã thẻ</label>
+        <input type="text" id="maThe" name="maThe" required maxlength="80" autocomplete="off" th:value="${maThe}">
+        <button type="submit">Tìm hóa đơn</button>
+    </form>
+
+    <p th:if="${maThe != null && !#strings.isEmpty(maThe)}">
+        Kết quả cho mã thẻ: <strong th:text="${maThe}">THE001</strong>
+    </p>
+
+    <p th:if="${danhSachHoaDon != null && danhSachHoaDon.isEmpty()}">
+        Không có hóa đơn chưa thanh toán cho mã thẻ này.
+    </p>
+
+    <th:block th:if="${danhSachHoaDon != null && !danhSachHoaDon.isEmpty()}">
+        <fieldset th:each="hoaDon : ${danhSachHoaDon}">
+            <legend th:text="|Hóa đơn #${hoaDon.maHoaDon}|">Hóa đơn</legend>
+
+            <p>
+                <strong>Ngày tạo:</strong>
+                <span th:if="${hoaDon.ngayTao != null}"
+                    th:text="${#temporals.format(hoaDon.ngayTao, 'dd/MM/yyyy HH:mm')}"></span>
+                <span th:if="${hoaDon.ngayTao == null}">—</span>
+                — <strong>Tổng tiền phạt:</strong>
+                <span th:text="${hoaDon.tongTienPhat}">0</span> VND
+            </p>
+
+            <p th:if="${hoaDon.theThuVien != null && hoaDon.theThuVien.banDoc != null}">
+                <strong>Độc giả:</strong>
+                <span th:text="${hoaDon.theThuVien.banDoc.hoTen}">Bạn đọc</span>
+                <span th:if="${hoaDon.theThuVien.banDoc.email != null}">
+                    (<span th:text="${hoaDon.theThuVien.banDoc.email}">email</span>)
+                </span>
+            </p>
+
+            <p th:if="${hoaDon.phieuPhats == null || hoaDon.phieuPhats.isEmpty()}">
+                Hóa đơn chưa có chi tiết phiếu phạt.
+            </p>
+
+            <table th:if="${hoaDon.phieuPhats != null && !hoaDon.phieuPhats.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th>Mã phiếu phạt</th>
+                        <th>Mã bản sao</th>
+                        <th>Tài liệu</th>
+                        <th>Tiền phạt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="phieuPhat : ${hoaDon.phieuPhats}">
+                        <td th:text="${phieuPhat.maPhieuPhat}">1</td>
+                        <td
+                            th:text="${phieuPhat.chiTietPhieuMuon != null && phieuPhat.chiTietPhieuMuon.banSao != null ? phieuPhat.chiTietPhieuMuon.banSao.maBanSao : '—'}">
+                            1</td>
+                        <td
+                            th:text="${phieuPhat.chiTietPhieuMuon != null && phieuPhat.chiTietPhieuMuon.banSao != null && phieuPhat.chiTietPhieuMuon.banSao.taiLieu != null ? phieuPhat.chiTietPhieuMuon.banSao.taiLieu.tenTl : '—'}">
+                            Tài liệu</td>
+                        <td th:text="${phieuPhat.tienPhat}">0</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <form th:action="@{/muon-tra/hoa-don/xac-nhan-thanh-toan}" method="post">
+                <input type="hidden" name="maHoaDon" th:value="${hoaDon.maHoaDon}">
+                <input type="hidden" name="maThe" th:value="${maThe}">
+                <button type="submit">Xác nhận thanh toán hóa đơn này</button>
+            </form>
+        </fieldset>
+    </th:block>
+
+    <p><a th:href="@{/nhanvien}">Quay lại trang nhân viên</a></p>
+</body>
+
+</html>

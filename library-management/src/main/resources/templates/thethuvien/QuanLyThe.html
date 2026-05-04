@@ -1,73 +1,121 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Quản lý thư viện</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 2rem; }
-        .actions { margin-bottom: 1rem; display: flex; gap: 0.75rem; align-items: center; }
-        .btn { display: inline-block; padding: 0.5rem 1rem; background: green; color: white; text-decoration: none; }
-        .table-wrap { max-height: 70vh; overflow-y: auto; border: 1px solid gray; border-radius: 6px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 0.6rem; border-bottom: 1px solid white; text-align: left; vertical-align: top; }
-        thead th { position: sticky; top: 0; background: white; border-bottom: 1px solid gray; }
-        .muted { color: gray; font-size: 0.95rem; }
-        .empty { padding: 1rem; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+        }
+
+        .actions {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: green;
+            color: white;
+            text-decoration: none;
+        }
+
+        .table-wrap {
+            max-height: 70vh;
+            overflow-y: auto;
+            border: 1px solid gray;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 0.6rem;
+            border-bottom: 1px solid white;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background: white;
+            border-bottom: 1px solid gray;
+        }
+
+        .muted {
+            color: gray;
+            font-size: 0.95rem;
+        }
+
+        .empty {
+            padding: 1rem;
+        }
     </style>
 </head>
+
 <body>
-<h2>Quản lý thư viện</h2>
+    <h2>Quản lý thư viện</h2>
 
-<div class="actions">
-    <a class="btn" th:href="@{/the-thu-vien/tao-the}">Tạo thẻ mới</a>
-    <span class="muted" th:text="'Tổng số thẻ: ' + ${#lists.size(listThe)}">Tổng số thẻ: 0</span>
-</div>
-<p class="muted" th:if="${successMessage != null}" th:text="${successMessage}"></p>
-<p class="muted" style="color: red;" th:if="${errorMessage != null}" th:text="${errorMessage}"></p>
+    <div class="actions">
+        <a class="btn" th:href="@{/the-thu-vien/tao-the}">Tạo thẻ mới</a>
+        <span class="muted" th:text="'Tổng số thẻ: ' + ${#lists.size(listThe)}">Tổng số thẻ: 0</span>
+    </div>
+    <p class="muted" th:if="${successMessage != null}" th:text="${successMessage}"></p>
+    <p class="muted" style="color: red;" th:if="${errorMessage != null}" th:text="${errorMessage}"></p>
 
-<div class="table-wrap" th:if="${listThe != null and !#lists.isEmpty(listThe)}">
-    <table>
-        <thead>
-        <tr>
-            <th>Mã thẻ</th>
-            <th>Bạn đọc</th>
-            <th>SDT</th>
-            <th>Gói thẻ</th>
-            <th>Ngày phát hành</th>
-            <th>Ngày hết hạn</th>
-            <th>Trạng thái</th>
-            <th>Gia hạn</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="the : ${listThe}">
-            <td th:text="${the.maThe}">1</td>
-            <td th:text="${the.banDoc != null ? the.banDoc.hoTen : ''}">Nguyen Van A</td>
-            <td th:text="${the.banDoc != null ? the.banDoc.sdt : ''}">090...</td>
-            <td th:text="${the.goiThe != null ? the.goiThe.ten : ''}">6 tháng</td>
-            <td th:text="${the.ngayPhatHanh}">2026-01-01T00:00</td>
-            <td th:text="${the.ngayHetHan}">2026-07-01T00:00</td>
-            <td th:text="${the.trangThai}">HOAT_DONG</td>
-            <td>
-                <form th:action="@{/the-thu-vien/gia-han}" method="post">
-                    <input type="hidden" name="maThe" th:value="${the.maThe}">
-                    <select name="soThangGiaHan" required>
-                        <option value="">Chọn thời hạn</option>
-                        <option th:each="soThang : ${dsSoThangGiaHan}"
-                                th:value="${soThang}"
-                                th:text="${soThang + ' tháng'}">6 tháng</option>
-                    </select>
-                    <button type="submit">Xác nhận</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <div class="table-wrap" th:if="${listThe != null and !#lists.isEmpty(listThe)}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã thẻ</th>
+                    <th>Bạn đọc</th>
+                    <th>SDT</th>
+                    <th>Gói thẻ</th>
+                    <th>Ngày phát hành</th>
+                    <th>Ngày hết hạn</th>
+                    <th>Trạng thái</th>
+                    <th>Gia hạn</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="the : ${listThe}">
+                    <td th:text="${the.maThe}">1</td>
+                    <td th:text="${the.banDoc != null ? the.banDoc.hoTen : ''}">Nguyen Van A</td>
+                    <td th:text="${the.banDoc != null ? the.banDoc.sdt : ''}">090...</td>
+                    <td th:text="${the.goiThe != null ? the.goiThe.ten : ''}">6 tháng</td>
+                    <td th:text="${the.ngayPhatHanh}">2026-01-01T00:00</td>
+                    <td th:text="${the.ngayHetHan}">2026-07-01T00:00</td>
+                    <td th:text="${the.trangThai}">HOAT_DONG</td>
+                    <td>
+                        <form th:action="@{/the-thu-vien/gia-han}" method="post">
+                            <input type="hidden" name="maThe" th:value="${the.maThe}">
+                            <select name="soThangGiaHan" required>
+                                <option value="">Chọn thời hạn</option>
+                                <option th:each="soThang : ${dsSoThangGiaHan}" th:value="${soThang}"
+                                    th:text="${soThang + ' tháng'}">6 tháng</option>
+                            </select>
+                            <button type="submit">Xác nhận</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-<div class="empty" th:if="${listThe == null or #lists.isEmpty(listThe)}">
-    Chưa có thẻ thư viện trong hệ thống
-</div>
-
+    <div class="empty" th:if="${listThe == null or #lists.isEmpty(listThe)}">
+        Chưa có thẻ thư viện trong hệ thống
+    </div>
+    <p><a th:href="@{/nhanvien}">Quay lại trang nhân viên</a></p>
 </body>
+
 </html>

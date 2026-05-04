@@ -1,4 +1,5 @@
 package com.example.librarymanagement.controller;
+
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +23,7 @@ public class NXBController {
 
     private final NXBService nxbService;
 
-   @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     public String handleError(Exception ex, Model model) {
         model.addAttribute("errorMessage", ex.getMessage());
         return "error";
@@ -65,6 +66,5 @@ public class NXBController {
         nxbService.deleteById(id);
         return "redirect:/NXB";
     }
-    
-    
+
 }

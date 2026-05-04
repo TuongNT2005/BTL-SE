@@ -36,5 +36,5 @@ public class TheThuVien {
     private List<PhieuMuon> phieuMuons;
 
     @OneToMany(mappedBy = "theThuVien")
-    private List<PhieuPhat> phieuPhats;
+    private List<HoaDon> hoaDons;
 }

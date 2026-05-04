@@ -20,11 +20,7 @@ public class PhieuPhat {
     @Column(name = "ngay_tao")
     private LocalDateTime ngayTao = LocalDateTime.now();
 
-    @ManyToOne
-    @JoinColumn(name = "ma_the", referencedColumnName = "ma_the")
-    private TheThuVien theThuVien;
-
-    @ManyToOne
+@ManyToOne
     @JoinColumn(name = "ma_chi_tiet_phieu_muon", referencedColumnName = "ma_chi_tiet_phieu_muon")
     private ChiTietPhieuMuon chiTietPhieuMuon;
 

@@ -16,6 +16,7 @@ import com.example.librarymanagement.entity.TinhTrangVatLy;
 import com.example.librarymanagement.entity.TrangThaiHoaDon;
 import com.example.librarymanagement.entity.TrangThaiLuuThong;
 import com.example.librarymanagement.entity.TrangThaiPhieuMuon;
+import com.example.librarymanagement.entity.TrangThaiThe;
 import com.example.librarymanagement.repository.BanSaoRepository;
 import com.example.librarymanagement.repository.ChiTietPhieuMuonRepository;
 import com.example.librarymanagement.repository.ChiTietPhieuNhapRepository;
@@ -23,6 +24,7 @@ import com.example.librarymanagement.repository.HoaDonRepository;
 import com.example.librarymanagement.repository.NhanVienRepository;
 import com.example.librarymanagement.repository.PhieuMuonRepository;
 import com.example.librarymanagement.repository.PhieuPhatRepository;
+import com.example.librarymanagement.repository.TheThuVienRepository;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -32,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,6 +50,7 @@ public class MuonTraService {
     private final ChiTietPhieuMuonRepository chiTietPhieuMuonRepository;
     private final PhieuPhatRepository phieuPhatRepository;
     private final HoaDonRepository hoaDonRepository;
+    private final TheThuVienRepository theThuVienRepository;
 
     public MuonTraService(
             TheThuVienService theThuVienService,
@@ -56,7 +60,8 @@ public class MuonTraService {
             BanSaoRepository banSaoRepository,
             ChiTietPhieuMuonRepository chiTietPhieuMuonRepository,
             PhieuPhatRepository phieuPhatRepository,
-            HoaDonRepository hoaDonRepository, ChiTietPhieuNhapRepository chiTietPhieuNhapRepository) {
+            HoaDonRepository hoaDonRepository, ChiTietPhieuNhapRepository chiTietPhieuNhapRepository,
+            TheThuVienRepository theThuVienRepository) {
         this.theThuVienService = theThuVienService;
         this.banSaoService = banSaoService;
         this.nhanVienRepository = nhanVienRepository;
@@ -66,6 +71,7 @@ public class MuonTraService {
         this.phieuPhatRepository = phieuPhatRepository;
         this.hoaDonRepository = hoaDonRepository;
         this.chiTietPhieuNhapRepository = chiTietPhieuNhapRepository;
+        this.theThuVienRepository = theThuVienRepository;
     }
 
     public void checkLapPhieuMuonConditions(LapPhieuMuonRequest request) {
@@ -83,7 +89,13 @@ public class MuonTraService {
         if (theThuVien == null) {
             throw new RuntimeException("Không tìm thấy thẻ thư viện!");
         }
+        if(theThuVien.getTrangThai() == TrangThaiThe.HET_HAN) {
+            throw new RuntimeException("Thẻ thư viện đã hết hạn! Hãy gia hạn thẻ trước!");
+        }
 
+        if(theThuVien.getTrangThai() == TrangThaiThe.KHOA) {
+            throw new RuntimeException("Thẻ thư viện đã bị khá! Hãy liên hệ nhân viên thư viện để được hỗ trợ!");
+        }
         Set<Integer> seenBanSao = new HashSet<>();
         for (Integer banSaoId : request.getDsBanSaoId()) {
             if (banSaoId == null) {
@@ -132,8 +144,7 @@ public class MuonTraService {
             chiTietPhieuMuonRepository.save(chiTietPhieuMuon);
         }
         return true;
-    } 
-
+    }
 
     @Transactional(rollbackFor = Exception.class)
     public void xulyTraSach(TraSachRequest request, HttpSession session) {
@@ -144,12 +155,6 @@ public class MuonTraService {
         if (request.getDanhSachChiTiet() == null || request.getDanhSachChiTiet().isEmpty()) {
             throw new RuntimeException("Phải chọn ít nhất 1 bản sao để trả!");
         }
-        HoaDon hoaDon = new HoaDon();
-        Integer maNhanVien = ((CurrentUser) session.getAttribute("currentUser")).getId();
-        hoaDon.setNguoiThu(nhanVienRepository.findById(maNhanVien).orElseThrow(() -> new RuntimeException("Không tìm thất nhân viên!")));
-        hoaDon.setTrangThai(TrangThaiHoaDon.CHUA_THANH_TOAN);
-        hoaDonRepository.save(hoaDon);
-
 
         PhieuMuon phieuMuon = phieuMuonRepository.findById(request.getIdPhieuMuon())
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy phiếu mượn"));
@@ -157,19 +162,29 @@ public class MuonTraService {
             throw new RuntimeException("Phiếu không ở trạng thái đang mượn!");
         }
 
-        // long soBanSaoChuaTra = phieuMuonRepository.findByTheThuVien_MaTheAndTrangThai(phieuMuon.getTheThuVien().getMaThe(), TrangThaiPhieuMuon.DANG_MUON).size();
+        HoaDon hoaDon = new HoaDon();
+        Integer maNhanVien = ((CurrentUser) session.getAttribute("currentUser")).getId();
+        hoaDon.setNguoiThu(nhanVienRepository.findById(maNhanVien)
+                .orElseThrow(() -> new RuntimeException("Không tìm thất nhân viên!")));
+        hoaDon.setTrangThai(TrangThaiHoaDon.CHUA_THANH_TOAN);
+        hoaDon.setTheThuVien(phieuMuon.getTheThuVien());
+        hoaDonRepository.save(hoaDon);
+
+        // long soBanSaoChuaTra =
+        // phieuMuonRepository.findByTheThuVien_MaTheAndTrangThai(phieuMuon.getTheThuVien().getMaThe(),
+        // TrangThaiPhieuMuon.DANG_MUON).size();
         long soBanSaoChuaTra = phieuMuon.getChiTietPhieuMuons().size();
         if (request.getDanhSachChiTiet().size() != soBanSaoChuaTra) {
             throw new RuntimeException("Phải trả đủ các bản sao chưa hoàn trả trên phiếu!");
         }
 
         Map<Integer, TinhTrangVatLy> danhSachTrangThai = new HashMap<>();
-        for(ChiTietTraDTO ct : request.getDanhSachChiTiet()) {
+        for (ChiTietTraDTO ct : request.getDanhSachChiTiet()) {
             danhSachTrangThai.put(ct.getMaBanSao(), ct.getTrangThai());
         }
 
         Long tongTienPhat = 0L;
-        for(ChiTietPhieuMuon chiTietPhieuMuon : phieuMuon.getChiTietPhieuMuons()) {
+        for (ChiTietPhieuMuon chiTietPhieuMuon : phieuMuon.getChiTietPhieuMuons()) {
 
             BanSao banSao = chiTietPhieuMuon.getBanSao();
             TinhTrangVatLy ttvl = danhSachTrangThai.get(banSao.getMaBanSao());
@@ -177,16 +192,15 @@ public class MuonTraService {
             chiTietPhieuMuon.setTinhTrangVatLy(ttvl);
             chiTietPhieuMuon.setNgayTra(LocalDateTime.now());
             chiTietPhieuMuonRepository.save(chiTietPhieuMuon);
-            
+
             banSao.setTinhTrangVatLy(ttvl);
             banSao.setTrangThaiLuuThong(TrangThaiLuuThong.SAN_SANG);
             banSaoRepository.save(banSao);
 
             Long tienPhat = 0l;
-            if(ttvl == TinhTrangVatLy.HU_HONG) {
+            if (ttvl == TinhTrangVatLy.HU_HONG) {
                 tienPhat += 50000l;
-            } 
-            else if(ttvl == TinhTrangVatLy.MAT) {
+            } else if (ttvl == TinhTrangVatLy.MAT) {
                 tienPhat += 100000l;
             }
             if (LocalDateTime.now().isAfter(phieuMuon.getNgayHetHan())) {
@@ -197,30 +211,71 @@ public class MuonTraService {
                     tienPhat += soNgayMuon * 5000L;
                 }
             }
-            if(tienPhat != 0) {
+            if (tienPhat != 0) {
                 PhieuPhat phieuPhat = new PhieuPhat();
                 phieuPhat.setChiTietPhieuMuon(chiTietPhieuMuon);
                 phieuPhat.setHoaDon(hoaDon);
                 phieuPhat.setNgayTao(LocalDateTime.now());
-                phieuPhat.setTheThuVien(phieuMuon.getTheThuVien());
                 phieuPhat.setTienPhat(tienPhat);
                 phieuPhatRepository.save(phieuPhat);
 
                 tongTienPhat += tienPhat;
             }
-            
+
         }
 
         if (tongTienPhat > 0) {
             hoaDon.setNgayTao(LocalDateTime.now());
             hoaDon.setTongTienPhat(tongTienPhat);
             hoaDonRepository.save(hoaDon);
-        }
-        else {
+        } else {
             hoaDonRepository.delete(hoaDon);
         }
 
         phieuMuon.setTrangThai(TrangThaiPhieuMuon.DA_TRA);
         phieuMuonRepository.save(phieuMuon);
+    }
+
+    public List<HoaDon> timHoaDonChuaThanhToanTheoMaThe(String maThe) {
+        if (maThe == null || maThe.isBlank()) {
+            throw new RuntimeException("Mã thẻ không được để trống!");
+        }
+        TheThuVien theThuVien = theThuVienService.getTheById(maThe.trim());
+        if (theThuVien == null) {
+            throw new RuntimeException("Không tìm thấy thẻ thư viện!");
+        }
+        return hoaDonRepository.findByTheThuVien_MaTheAndTrangThai(
+                maThe.trim(),
+                TrangThaiHoaDon.CHUA_THANH_TOAN);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void xacNhanThanhToanHoaDon(Integer maHoaDon, HttpSession session) {
+        if (maHoaDon == null) {
+            throw new RuntimeException("Mã hóa đơn không hợp lệ!");
+        }
+        CurrentUser currentUser = (CurrentUser) session.getAttribute("currentUser");
+        if (currentUser == null || !currentUser.isNhanVien()) {
+            throw new RuntimeException("Bạn không có quyền xác nhận thanh toán.");
+        }
+        HoaDon hoaDon = hoaDonRepository.findById(maHoaDon)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn."));
+
+        if (hoaDon.getTrangThai() == TrangThaiHoaDon.DA_THANH_TOAN) {
+            throw new RuntimeException("Hóa đơn này đã được thanh toán trước đó.");
+        }
+
+        NhanVien nhanVienThu = nhanVienRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên hiện tại."));
+
+        hoaDon.setTrangThai(TrangThaiHoaDon.DA_THANH_TOAN);
+        hoaDon.setNguoiThu(nhanVienThu);
+        hoaDonRepository.save(hoaDon);
+
+        TheThuVien theThuVien = hoaDon.getTheThuVien();
+        if(theThuVien.getTrangThai() == TrangThaiThe.KHOA) {
+            theThuVien.setTrangThai(TrangThaiThe.HOAT_DONG);
+            theThuVienRepository.save(theThuVien);
+        }
     }
 }

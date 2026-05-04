@@ -27,7 +27,7 @@ public class AuthController {
         return "error";
     }
 
-    @GetMapping({"/", "/login"})
+    @GetMapping({ "/", "/login" })
     public String loginPage(HttpSession session) {
         CurrentUser currentUser = (CurrentUser) session.getAttribute(CURRENT_USER_SESSION_KEY);
         if (currentUser == null) {
@@ -40,8 +40,7 @@ public class AuthController {
     public String loginBanDoc(
             @RequestParam String email,
             @RequestParam String sdt,
-            HttpSession session
-    ) {
+            HttpSession session) {
         CurrentUser currentUser = authService.loginBanDoc(email, sdt);
         session.setAttribute(CURRENT_USER_SESSION_KEY, currentUser);
         return redirectByRole(currentUser);
@@ -51,8 +50,7 @@ public class AuthController {
     public String loginNhanVien(
             @RequestParam String sdt,
             @RequestParam String matKhau,
-            HttpSession session
-    ) {
+            HttpSession session) {
         CurrentUser currentUser = authService.loginNhanVien(sdt, matKhau);
         session.setAttribute(CURRENT_USER_SESSION_KEY, currentUser);
         return redirectByRole(currentUser);

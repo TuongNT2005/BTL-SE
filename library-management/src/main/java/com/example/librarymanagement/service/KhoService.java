@@ -38,8 +38,7 @@ public class KhoService {
             NhanVienRepository nhanVienRepository,
             PhieuNhapKhoRepository phieuNhapKhoRepository,
             ChiTietPhieuNhapRepository chiTietPhieuNhapRepository,
-            BanSaoRepository banSaoRepository
-    ) {
+            BanSaoRepository banSaoRepository) {
         this.nhaCungCapService = nhaCungCapService;
         this.taiLieuService = taiLieuService;
         this.nhanVienRepository = nhanVienRepository;
@@ -71,7 +70,8 @@ public class KhoService {
         // Tránh trùng mã tài liệu trong 1 phiếu muọn
         Set<Integer> seenTaiLieu = new HashSet<>();
         for (ChiTietNhapKhoRequest item : request.getChiTietPhieuNhaps()) {
-            if(item == null || item.getMaTaiLieu() == null) continue;
+            if (item == null || item.getMaTaiLieu() == null)
+                continue;
             if (!seenTaiLieu.add(item.getMaTaiLieu())) {
                 throw new RuntimeException("Bị trùng tài liệu: " + item.getMaTaiLieu());
             }
@@ -82,7 +82,7 @@ public class KhoService {
 
     @Transactional(rollbackFor = Exception.class)
     public void xuLyNhapKho(NhapKhoRequest request) {
-        checkNhapKhoConditions(request); 
+        checkNhapKhoConditions(request);
 
         NhaCungCap nhaCungCap = nhaCungCapService.findById(request.getMaNcc());
         NhanVien nhanVien = nhanVienRepository.findById(1)
@@ -100,7 +100,7 @@ public class KhoService {
         phieuNhapKho.setNhaCungCap(nhaCungCap);
         phieuNhapKho.setNguoiLapPhieu(nhanVien);
 
-        phieuNhapKhoRepository.save(phieuNhapKho); 
+        phieuNhapKhoRepository.save(phieuNhapKho);
 
         for (ChiTietNhapKhoRequest item : chiTietPhieuNhaps) {
             TaiLieu taiLieu = taiLieuService.findTaiLieuById(item.getMaTaiLieu());
@@ -116,7 +116,7 @@ public class KhoService {
 
             chiTietPhieuNhapRepository.save(chiTietPhieuNhap);
 
-            for(int i = 0; i < item.getSoLuong(); i++) {
+            for (int i = 0; i < item.getSoLuong(); i++) {
                 BanSao banSao = new BanSao();
                 banSao.setTaiLieu(taiLieu);
                 banSao.setTinhTrangVatLy(TinhTrangVatLy.TOT);
@@ -127,4 +127,3 @@ public class KhoService {
         }
     }
 }
-

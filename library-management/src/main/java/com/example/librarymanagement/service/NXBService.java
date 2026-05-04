@@ -13,10 +13,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class NXBService {
     private final NhaXuatBanRepository NXBrepo;
-    public List<NhaXuatBan> geListNXB(){
+
+    public List<NhaXuatBan> geListNXB() {
         return NXBrepo.findAll();
     }
-    
+
     public NhaXuatBan findById(Integer id) {
         return NXBrepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy Nha Xuat Ban"));

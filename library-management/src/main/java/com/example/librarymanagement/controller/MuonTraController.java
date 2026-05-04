@@ -4,6 +4,7 @@ import com.example.librarymanagement.auth.CurrentUser;
 import com.example.librarymanagement.dto.LapPhieuMuonRequest;
 import com.example.librarymanagement.dto.TraSachRequest;
 import com.example.librarymanagement.entity.BanSao;
+import com.example.librarymanagement.entity.HoaDon;
 import com.example.librarymanagement.entity.PhieuMuon;
 import com.example.librarymanagement.entity.TheThuVien;
 import com.example.librarymanagement.service.BanSaoService;
@@ -37,14 +38,12 @@ public class MuonTraController {
             MuonTraService muonTraService,
             TheThuVienService theThuVienService,
             BanSaoService banSaoService,
-            PhieuMuonService phieuMuonService
-    ) {
+            PhieuMuonService phieuMuonService) {
         this.muonTraService = muonTraService;
         this.theThuVienService = theThuVienService;
         this.banSaoService = banSaoService;
         this.phieuMuonService = phieuMuonService;
     }
-
 
     @GetMapping("/lap-phieu-muon")
     public String hienThiFormLapPhieuMuon(Model model) {
@@ -104,7 +103,8 @@ public class MuonTraController {
         if (request.getTheId() != null) {
             try {
                 model.addAttribute("theThuVien", theThuVienService.getTheById(request.getTheId()));
-                model.addAttribute("soSachChuaTra", theThuVienService.getBanSaoChuaTraByTheId(request.getTheId()).size());
+                model.addAttribute("soSachChuaTra",
+                        theThuVienService.getBanSaoChuaTraByTheId(request.getTheId()).size());
             } catch (Exception ignored) {
                 System.out.println(ignored.getMessage());
             }
@@ -114,29 +114,18 @@ public class MuonTraController {
 
     @GetMapping("/tra-sach")
     public String hienThiFormTraSach(Model model, HttpSession session) {
-        // String redir = redirectIfAnonymous(session);
-        // if (redir != null) {
-        //     return redir;
-        // }
         model.addAttribute("traSachRequest", new TraSachRequest());
         return "muontra/FormTraSach";
     }
 
     @PostMapping("/tra-sach/tim-phieu")
     public String hienThiThongTinTraSach(@RequestParam String maThe, Model model, HttpSession session) {
-        // String redir = redirectIfAnonymous(session);
-        // if (redir != null) {
-        //     return redir;
-        // }
         try {
-            // TraSachTimTheResult result = muonTraService.timPhieuChoTraSach(maThe);
-            // model.addAttribute("theThuVien", result.theThuVien());
-            // model.addAttribute("danhSachPhieuTra", result.phieuViews());
             TheThuVien theThuVien = theThuVienService.getTheById(maThe);
             List<PhieuMuon> phieuMuons = phieuMuonService.getAllPhieuMuonChuaTraByMaThe(maThe);
             model.addAttribute("theThuVien", theThuVien);
             model.addAttribute("danhSachPhieuTra", phieuMuons);
-            
+
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
@@ -149,12 +138,7 @@ public class MuonTraController {
             @ModelAttribute TraSachRequest request,
             Model model,
             HttpSession session,
-            RedirectAttributes redirectAttributes
-    ) {
-        // String redir = redirectIfAnonymous(session);
-        // if (redir != null) {
-        //     return redir;
-        // }
+            RedirectAttributes redirectAttributes) {
         try {
             muonTraService.xulyTraSach(request, session);
             redirectAttributes.addFlashAttribute("successMessage", "Trả sách thành công.");
@@ -164,5 +148,49 @@ public class MuonTraController {
             model.addAttribute("traSachRequest", request);
             return "muontra/FormTraSach";
         }
+    }
+
+    @GetMapping("/hoa-don")
+    public String hienThiFormHoaDon(
+            @RequestParam(required = false) String maThe,
+            Model model) {
+        model.addAttribute("maThe", maThe == null ? "" : maThe.trim());
+        if (maThe != null && !maThe.isBlank()) {
+            try {
+                List<HoaDon> danhSachHoaDon = muonTraService.timHoaDonChuaThanhToanTheoMaThe(maThe);
+                model.addAttribute("danhSachHoaDon", danhSachHoaDon);
+            } catch (RuntimeException e) {
+                model.addAttribute("errorMessage", e.getMessage());
+            }
+        }
+        return "muontra/FormHoaDon";
+    }
+
+    @PostMapping("/hoa-don/tim")
+    public String timHoaDonTheoMaThe(@RequestParam String maThe, RedirectAttributes redirectAttributes) {
+        if (maThe == null || maThe.isBlank()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Mã thẻ không được để trống!");
+            return "redirect:/muon-tra/hoa-don";
+        }
+        return "redirect:/muon-tra/hoa-don?maThe=" + maThe.trim();
+    }
+
+    @PostMapping("/hoa-don/xac-nhan-thanh-toan")
+    public String xacNhanThanhToanHoaDon(
+            @RequestParam Integer maHoaDon,
+            @RequestParam(required = false) String maThe,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        try {
+            muonTraService.xacNhanThanhToanHoaDon(maHoaDon, session);
+            redirectAttributes.addFlashAttribute("successMessage", "Xác nhận thanh toán hóa đơn thành công.");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+
+        if (maThe != null && !maThe.isBlank()) {
+            return "redirect:/muon-tra/hoa-don?maThe=" + maThe.trim();
+        }
+        return "redirect:/muon-tra/hoa-don";
     }
 }

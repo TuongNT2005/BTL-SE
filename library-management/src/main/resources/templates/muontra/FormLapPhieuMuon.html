@@ -110,7 +110,7 @@
         <p class="text-error" th:if="${errorMessage != null}" th:text="${errorMessage}">
         </p>
 
-        
+
         <div class="card">
             <form th:action="@{/muon-tra/thong-tin-ban-doc}" method="get">
                 <div class="row">
@@ -170,36 +170,32 @@
 
         <div class="card" th:if="${theThuVien != null}">
             <h3>Nhập thông tin lập phiếu</h3>
-        
-            <form th:action="@{/muon-tra/lap-phieu-muon}"
-                  th:object="${lapPhieuMuonRequest}"
-                  method="post">
-        
+
+            <form th:action="@{/muon-tra/lap-phieu-muon}" th:object="${lapPhieuMuonRequest}" method="post">
+
                 <div class="row">
                     <label>Mã thẻ thư viện:</label>
                     <input type="text" th:field="*{theId}" required>
                 </div>
-        
+
                 <div class="row">
                     <label>Mã nhân viên:</label>
                     <input type="number" th:field="*{maNhanVien}" readonly>
                 </div>
-        
+
                 <hr>
-        
+
                 <div class="row">
                     <label>Nhập mã bản sao:</label>
-                    <input type="number"
-                           id="inputBanSaoId"
-                           placeholder="Nhập mã">
-        
+                    <input type="number" id="inputBanSaoId" placeholder="Nhập mã">
+
                     <button type="button" id="btnThemBanSao">
                         Thêm
                     </button>
                 </div>
-        
+
                 <h3>Danh sách sẽ mượn</h3>
-        
+
                 <table>
                     <thead>
                         <tr>
@@ -209,17 +205,18 @@
                             <th>Xóa</th>
                         </tr>
                     </thead>
-        
+
                     <tbody id="borrowList"></tbody>
                 </table>
-        
+
                 <br>
-        
+
                 <button type="submit">
                     Xác nhận lập phiếu mượn
                 </button>
             </form>
         </div>
+        <p><a th:href="@{/nhanvien}">Quay lại trang nhân viên</a></p>
     </div>
 
     <script th:inline="javascript">

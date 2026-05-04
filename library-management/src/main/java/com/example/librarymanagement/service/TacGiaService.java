@@ -8,13 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class TacGiaService {
 
     private final TacGiaRepository repository;
-
-
 
     public List<TacGia> findAll() {
         return repository.findAll();

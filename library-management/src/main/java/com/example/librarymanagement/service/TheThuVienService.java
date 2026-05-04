@@ -31,7 +31,8 @@ public class TheThuVienService {
             TheThuVienRepository theThuVienRepository,
             BanDocService banDocService,
             GoiTheRepository goiTheRepository,
-            ChiTietPhieuMuonRepository chiTietPhieuMuonRepository, BanSaoService banSaoService, BanSaoRepository banSaoRepository) {
+            ChiTietPhieuMuonRepository chiTietPhieuMuonRepository, BanSaoService banSaoService,
+            BanSaoRepository banSaoRepository) {
         this.theThuVienRepository = theThuVienRepository;
         this.banDocService = banDocService;
         this.goiTheRepository = goiTheRepository;
@@ -47,7 +48,7 @@ public class TheThuVienService {
 
         boolean daCoEmail = theThuVienRepository.existsByBanDoc_Email(request.getEmail());
         boolean daCoSoDienThoai = theThuVienRepository.existsByBanDoc_Sdt(request.getSdt());
-        
+
         if (daCoEmail) {
             throw new RuntimeException("Eamil này đã đăng ký cho 1 thẻ thư viện!");
         }
@@ -67,7 +68,8 @@ public class TheThuVienService {
         LocalDateTime ngayHetHan = ngayPhatHanh.plusMonths(goiThe.getThoiHan());
 
         TheThuVien theThuVien = new TheThuVien();
-        theThuVien.setMaThe("THE_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMđHHmmss")) + "_" + String.valueOf(new Random().nextInt(100)));
+        theThuVien.setMaThe("THE_" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMđHHmmss")) + "_"
+                + String.valueOf(new Random().nextInt(100)));
         theThuVien.setBanDoc(banDoc);
         theThuVien.setGoiThe(goiThe);
         theThuVien.setNgayPhatHanh(ngayPhatHanh);
@@ -108,15 +110,20 @@ public class TheThuVienService {
     }
 
     public boolean giaHanThe(GiaHanTheRequest request) {
-        
 
         TheThuVien the = theThuVienRepository.findByMaThe(request.getMaThe()).get();
         if (the == null || the.getNgayHetHan() == null) {
             return false;
         }
-
+        if (the.getTrangThai() == TrangThaiThe.KHOA) return false;
         LocalDateTime ngayHetHanMoi = the.getNgayHetHan().plusMonths(request.getSoThangGiaHan());
         the.setNgayHetHan(ngayHetHanMoi);
+        if(the.getNgayHetHan().isBefore(LocalDateTime.now())) {
+            the.setTrangThai(TrangThaiThe.HET_HAN);
+        }
+        else {
+            the.setTrangThai(TrangThaiThe.HOAT_DONG);
+        }
         theThuVienRepository.save(the);
         return true;
     }
