@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class LapPhieuMuonRequest {
-    private Integer theId;
+    private String theId;
     private List<Integer> dsBanSaoId = new ArrayList<>();
     private Integer maNhanVien = 1;
 }

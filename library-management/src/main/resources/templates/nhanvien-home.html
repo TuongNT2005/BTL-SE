@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang nhân viên</title>
+</head>
+<body>
+    <h1>Trang nhân viên</h1>
+    <p>Xin chào, <span th:text="${currentUser.ten}">Nhân viên</span></p>
+    <a th:href="@{/kho/nhap-kho}">Nhập kho</a>
+    <a th:href="@{/muon-tra/lap-phieu-muon}">Lập phiếu mượn</a>
+    <a th:href="@{/muon-tra/tra-sach}">Trả sách</a>
+    <a th:href="@{/the-thu-vien/quan-ly}">Quản lý thẻ</a>
+    <a th:href="@{/logout}">Đăng xuất</a>
+</body>
+</html>

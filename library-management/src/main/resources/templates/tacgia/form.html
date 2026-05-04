@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Thêm mới Tác Giả</title>
+    <title th:text="${isEdit} ? 'Cap nhat Tac Gia' : 'Them moi Tac Gia'">Them moi Tac Gia</title>
     <style>
         body {font-family: Arial, sans-serif; margin: 2rem;}
         .form-group {margin-bottom: 1rem;}
@@ -12,17 +12,18 @@
     </style>
 </head>
 <body>
-<h2>Thêm mới Tác Giả</h2>
-<form th:action="@{/tacgia}" th:object="${tacGia}" method="post">
+<h2 th:text="${isEdit} ? 'Cập nhật Tác giả' : 'Thêm mới Tác giả'"></h2>
+<form th:action="${isEdit} ? @{/tacgia/update/{id}(id=${tacGia.maTacGia})} : @{/tacgia}" th:object="${tacGia}" method="post">
+    <input type="hidden" th:field="*{maTacGia}"/>
     <div class="form-group">
         <label for="ten">Tên</label>
         <input type="text" id="ten" th:field="*{ten}" required/>
     </div>
     <div class="form-group">
-        <label for="tieuSu">Tiểu Sử</label>
+        <label for="tieuSu">Tiểu sử</label>
         <textarea id="tieuSu" th:field="*{tieuSu}" rows="4"></textarea>
     </div>
-    <button type="submit">Lưu</button>
+    <button type="submit" th:text="${isEdit} ? 'Cập nhật' : 'Lưu'"></button>
 </form>
 <a th:href="@{/tacgia}">Quay lại danh sách</a>
 </body>

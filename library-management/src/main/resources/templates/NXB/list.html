@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Nhà Xuất Bản</title>
+</head>
+<body>
+    <h1>Danh sách Nhà Xuất Bản</h1>
+    <a th:href="@{/NXB/new}">Thêm mới</a>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Địa chỉ</th>
+            <th>Số điện thoại</th>
+        </tr>
+        <tr th:each="nxb : ${nhaXuatBans}">
+            <td th:text="${nxb.maNxb}">1</td>
+            <td th:text="${nxb.ten}">Tên</td>
+            <td th:text="${nxb.diaChi}">Địa chỉ</td>
+            <td th:text="${nxb.sdt}">Số điện thoại</td>
+            <td>
+                <a th:href="@{'/NXB/delete/' + ${nxb.maNxb}}">Xóa</a>
+                <a th:href="@{'/NXB/update/' + ${nxb.maNxb}}">Sửa</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

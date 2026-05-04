@@ -84,7 +84,7 @@ public class KhoService {
     public void xuLyNhapKho(NhapKhoRequest request) {
         checkNhapKhoConditions(request); 
 
-        NhaCungCap nhaCungCap = nhaCungCapService.findNCCById(request.getMaNcc());
+        NhaCungCap nhaCungCap = nhaCungCapService.findById(request.getMaNcc());
         NhanVien nhanVien = nhanVienRepository.findById(1)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên!"));
 

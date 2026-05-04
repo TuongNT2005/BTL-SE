@@ -20,6 +20,9 @@ public class NhanVien {
     @Column(name = "sdt", length = 20)
     private String sdt;
 
+    @Column(name ="mat_khau", nullable = false)
+    private String matKhau;
+    
     @Column(name = "trang_thai_lam_viec")
     private Boolean trangThaiLamViec = true;
 

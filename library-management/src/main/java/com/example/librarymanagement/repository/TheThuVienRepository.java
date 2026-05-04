@@ -9,7 +9,10 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface TheThuVienRepository extends JpaRepository<TheThuVien, Integer> {
+
+public interface TheThuVienRepository extends JpaRepository<TheThuVien, String> {
     boolean existsByBanDoc_Email(String email);
-    Optional<TheThuVien> findByMaThe(Integer maThe);
+    boolean existsByBanDoc_Sdt(String sdt);
+    Optional<TheThuVien> findByMaThe(String maThe);
+
 }

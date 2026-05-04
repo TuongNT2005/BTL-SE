@@ -40,6 +40,7 @@ CREATE TABLE NhanVien (
     ma_nhan_vien INT AUTO_INCREMENT PRIMARY KEY,
     ten VARCHAR(255) NOT NULL,
     sdt VARCHAR(20),
+    mat_khau VARCHAR(100) NOT NULL,
     trang_thai_lam_viec BOOLEAN DEFAULT TRUE,
     UNIQUE KEY uq_nhanvien_sdt (sdt)
 );
@@ -64,6 +65,26 @@ CREATE TABLE TaiLieu (
     UNIQUE KEY uq_tailieu_isbn (isbn)
 );
 
+CREATE TABLE PhieuNhapKho (
+    ma_phieu_nhap INT AUTO_INCREMENT PRIMARY KEY,
+    ngay_nhap DATETIME DEFAULT CURRENT_TIMESTAMP,
+    tong_tien BIGINT DEFAULT 0,
+    ma_ncc INT NOT NULL,
+    ma_nhan_vien INT NOT NULL,
+    FOREIGN KEY (ma_ncc) REFERENCES NhaCungCap(ma_ncc) ON DELETE RESTRICT,
+    FOREIGN KEY (ma_nhan_vien) REFERENCES NhanVien(ma_nhan_vien) ON DELETE RESTRICT
+);
+
+CREATE TABLE ChiTietPhieuNhap (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    ma_phieu_nhap INT NOT NULL,
+    ma_tai_lieu INT NOT NULL,
+    so_luong BIGINT NOT NULL,
+    don_gia BIGINT NOT NULL,
+    FOREIGN KEY (ma_phieu_nhap) REFERENCES PhieuNhapKho(ma_phieu_nhap) ON DELETE CASCADE,
+    FOREIGN KEY (ma_tai_lieu) REFERENCES TaiLieu(ma_tai_lieu) ON DELETE RESTRICT
+);
+
 CREATE TABLE TacGia_TaiLieu (
     ma_tac_gia INT NOT NULL,
     ma_tai_lieu INT NOT NULL,
@@ -81,7 +102,7 @@ CREATE TABLE BanSao (
 );
 
 CREATE TABLE TheThuVien (
-    ma_the INT AUTO_INCREMENT PRIMARY KEY,
+    ma_the VARCHAR(50) PRIMARY KEY,
     ngay_phat_hanh DATETIME DEFAULT CURRENT_TIMESTAMP,
     ngay_het_han DATETIME NOT NULL,
     trang_thai ENUM('HOAT_DONG','HET_HAN') DEFAULT 'HOAT_DONG',
@@ -89,7 +110,7 @@ CREATE TABLE TheThuVien (
     ma_doc_gia INT NOT NULL,
     FOREIGN KEY (ma_goi_the) REFERENCES GoiThe(ma_goi_the) ON DELETE RESTRICT,
     FOREIGN KEY (ma_doc_gia) REFERENCES BanDoc(ma_doc_gia) ON DELETE CASCADE,
-    UNIQUE KEY uq_thethuvien_docgoi (ma_doc_gia, ma_goi_the)
+    UNIQUE KEY uq_thethuvien_docgia (ma_doc_gia)
 );
 
 CREATE TABLE PhieuMuon (
@@ -98,10 +119,9 @@ CREATE TABLE PhieuMuon (
     ngay_het_han DATETIME NOT NULL,
     trang_thai ENUM('DANG_MUON','DA_TRA','QUA_HAN') DEFAULT 'DANG_MUON',
     ma_nhan_vien INT NOT NULL,
-    ma_the INT NOT NULL,
+    ma_the VARCHAR(50) NOT NULL,
     FOREIGN KEY (ma_nhan_vien) REFERENCES NhanVien(ma_nhan_vien) ON DELETE RESTRICT,
-    FOREIGN KEY (ma_the) REFERENCES TheThuVien(ma_the) ON DELETE RESTRICT,
-    UNIQUE KEY uq_phieumuon_the_nhanvien (ma_the, ma_nhan_vien)
+    FOREIGN KEY (ma_the) REFERENCES TheThuVien(ma_the) ON DELETE RESTRICT
 );
 
 CREATE TABLE ChiTietPhieuMuon (
@@ -120,6 +140,7 @@ CREATE TABLE HoaDon (
     ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
     tong_tien_phat BIGINT DEFAULT 0,
     ma_nhan_vien INT NOT NULL,
+    trang_thai: ENUM('CHUA_THANH_TOAN', 'DA_THANH_TOAN') DEFAULT 'CHUA_THANH_TOAN',
     FOREIGN KEY (ma_nhan_vien) REFERENCES NhanVien(ma_nhan_vien) ON DELETE RESTRICT
 );
 
@@ -127,8 +148,7 @@ CREATE TABLE PhieuPhat (
     ma_phieu_phat INT AUTO_INCREMENT PRIMARY KEY,
     tien_phat BIGINT NOT NULL,
     ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    trang_thai VARCHAR(50) DEFAULT 'CHUA_THANH_TOAN',
-    ma_the INT NOT NULL,
+    ma_the VARCHAR(50) NOT NULL,
     ma_chi_tiet_phieu_muon INT NOT NULL,
     ma_hoa_don INT NULL,
     FOREIGN KEY (ma_the) REFERENCES TheThuVien(ma_the) ON DELETE RESTRICT,
@@ -136,22 +156,3 @@ CREATE TABLE PhieuPhat (
     FOREIGN KEY (ma_hoa_don) REFERENCES HoaDon(ma_hoa_don) ON DELETE SET NULL
 );
 
-CREATE TABLE PhieuNhapKho (
-    ma_phieu_nhap INT AUTO_INCREMENT PRIMARY KEY,
-    ma_ncc INT NOT NULL,
-    ma_nhan_vien INT NOT NULL,
-    ngay_nhap DATETIME DEFAULT CURRENT_TIMESTAMP,
-    tong_tien DECIMAL(12, 2) DEFAULT 0.00,
-    FOREIGN KEY (ma_ncc) REFERENCES NhaCungCap(ma_ncc) ON DELETE RESTRICT,
-    FOREIGN KEY (ma_nhan_vien) REFERENCES NhanVien(ma_nhan_vien) ON DELETE RESTRICT
-);
-
-CREATE TABLE ChiTietPhieuNhap (
-    ma_phieu_nhap INT NOT NULL,
-    ma_tai_lieu INT NOT NULL,
-    so_luong INT NOT NULL DEFAULT 1,
-    don_gia DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-    PRIMARY KEY (ma_phieu_nhap, ma_tai_lieu),
-    FOREIGN KEY (ma_phieu_nhap) REFERENCES PhieuNhapKho(ma_phieu_nhap) ON DELETE CASCADE,
-    FOREIGN KEY (ma_tai_lieu) REFERENCES TaiLieu(ma_tai_lieu) ON DELETE RESTRICT
-);

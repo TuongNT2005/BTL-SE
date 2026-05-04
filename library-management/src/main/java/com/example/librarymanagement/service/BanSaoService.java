@@ -25,4 +25,8 @@ public class BanSaoService {
         return banSaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy bản sao có mã: " + id));
     }
+
+    public List<BanSao> getAllBanSaoChuaTraByTheId(String theId) {
+        return banSaoRepository.findAllBanSaoChuaTraByMaThe(theId);
+    }
 }

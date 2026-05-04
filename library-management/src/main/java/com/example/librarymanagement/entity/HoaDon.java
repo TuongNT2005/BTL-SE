@@ -21,6 +21,10 @@ public class HoaDon {
     @Column(name = "tong_tien_phat")
     private Long tongTienPhat = 0L;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "trang_thai")
+    private TrangThaiHoaDon trangThai; 
+
     @ManyToOne
     @JoinColumn(name = "ma_nhan_vien", referencedColumnName = "ma_nhan_vien")
     private NhanVien nguoiThu;

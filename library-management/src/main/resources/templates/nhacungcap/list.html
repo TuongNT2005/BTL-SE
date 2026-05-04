@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Nhà Cung Cấp</title>
+</head>
+<body>
+    <h1>Danh sách Nhà Cung Cấp</h1>
+    <a th:href="@{/nhacungcap/new}">Thêm mới</a>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Địa chỉ</th>
+            <th>Số điện thoại</th>
+            <th>Email</th>
+            <th>Hành động</th>
+        </tr>
+        <tr th:each="ncc : ${nhaCungCaps}">
+            <td th:text="${ncc.maNcc}">1</td>
+            <td th:text="${ncc.ten}">Tên</td>
+            <td th:text="${ncc.diaChi}">Địa chỉ</td>
+            <td th:text="${ncc.sdt}">Số điện thoại</td>
+            <td th:text="${ncc.email}">Email</td>
+            <td>
+                <a th:href="@{'/nhacungcap/delete/' + ${ncc.maNcc}}">Xóa</a>
+                <a th:href="@{'/nhacungcap/update/' + ${ncc.maNcc}}">Sửa</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

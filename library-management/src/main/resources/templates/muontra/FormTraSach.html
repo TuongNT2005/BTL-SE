@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trả sách</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            color: #000;
+            background: #fff;
+            margin: 1rem;
+            line-height: 1.4;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .msg {
+            margin: 0.75rem 0;
+        }
+
+        form {
+            margin: 0.75rem 0;
+        }
+
+        label {
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        input[type="text"],
+        select {
+            color: #000;
+            background: #fff;
+            border: 1px solid #000;
+            padding: 0.25rem 0.35rem;
+        }
+
+        button {
+            color: #000;
+            background: #fff;
+            border: 1px solid #000;
+            padding: 0.35rem 0.75rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 48rem;
+            margin: 0.5rem 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 0.35rem 0.5rem;
+            vertical-align: top;
+        }
+
+        fieldset {
+            border: 1px solid #000;
+            margin: 1rem 0;
+            padding: 0.75rem 1rem;
+            max-width: 52rem;
+        }
+
+        legend {
+            padding: 0 0.35rem;
+            font-weight: bold;
+        }
+
+        a {
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Trả sách</h1>
+
+    <p th:if="${successMessage}" class="msg" th:text="${successMessage}"></p>
+    <p th:if="${errorMessage}" class="msg" th:text="${errorMessage}"></p>
+
+    <th:block th:if="${theThuVien == null}">
+        <p>Nhập mã thẻ thư viện để xem các phiếu đang mượn.</p>
+        <form th:action="@{/muon-tra/tra-sach/tim-phieu}" method="post">
+            <label for="maThe">Mã thẻ</label>
+            <input type="text" id="maThe" name="maThe" required maxlength="80" autocomplete="off">
+            <button type="submit">Tìm phiếu</button>
+        </form>
+    </th:block>
+
+    <th:block th:if="${theThuVien != null}">
+        <p>
+            <strong>Mã thẻ:</strong> <span th:text="${theThuVien.maThe}">THE</span>
+            <span th:if="${theThuVien.banDoc != null}">
+                — <strong>Độc giả:</strong> <span th:text="${theThuVien.banDoc.hoTen}">Tên</span>
+                <span th:if="${theThuVien.banDoc.email != null}">
+                    (<span th:text="${theThuVien.banDoc.email}">email</span>)
+                </span>
+            </span>
+        </p>
+        <p><a th:href="@{/muon-tra/tra-sach}">Nhập mã thẻ khác</a></p>
+
+        <p th:if="${danhSachPhieuTra == null || danhSachPhieuTra.isEmpty()}">Không có phiếu đang mượn.</p>
+
+
+        <th:block th:each="phieu : ${danhSachPhieuTra}">
+            <fieldset
+                th:with="chuaTra=${phieu.chiTietPhieuMuons != null ? phieu.chiTietPhieuMuons.?[ngayTra == null] : T(java.util.Collections).emptyList()}">
+                <legend th:text="|Phiếu mượn ${phieu.maPhieuMuon}|">Phiếu</legend>
+                <p>
+                    Ngày mượn:
+                    <span th:if="${phieu.ngayMuon != null}"
+                        th:text="${#temporals.format(phieu.ngayMuon, 'dd/MM/yyyy HH:mm')}"></span>
+                    <span th:if="${phieu.ngayMuon == null}">—</span>
+                    — Hạn trả:
+                    <span th:if="${phieu.ngayHetHan != null}"
+                        th:text="${#temporals.format(phieu.ngayHetHan, 'dd/MM/yyyy')}"></span>
+                    <span th:if="${phieu.ngayHetHan == null}">—</span>
+                </p>
+
+                <p th:if="${#lists.isEmpty(chuaTra)}">Không có bản sao chờ trả trên phiếu này.</p>
+
+                <form th:if="${!#lists.isEmpty(chuaTra)}" th:action="@{/muon-tra/tra-sach/xac-nhan}" method="post">
+                    <input type="hidden" name="idPhieuMuon" th:value="${phieu.maPhieuMuon}">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã bản sao</th>
+                                <th>Tài liệu</th>
+                                <th>Tình trạng khi trả</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="chi, stat : ${chuaTra}">
+                                <td th:text="${chi.banSao != null ? chi.banSao.maBanSao : '—'}">1</td>
+                                <td
+                                    th:text="${chi.banSao != null && chi.banSao.taiLieu != null ? chi.banSao.taiLieu.tenTl : ''}">
+                                    Sách</td>
+                                <td>
+                                    <select th:name="|danhSachChiTiet[${stat.index}].trangThai|" required>
+                                        <option value="TOT">Tốt</option>
+                                        <option value="HU_HONG">Hỏng</option>
+                                        <option value="MAT">Mất</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="hidden" th:name="|danhSachChiTiet[${stat.index}].maBanSao|"
+                                        th:value="${chi.banSao.maBanSao}">
+                                </td>   
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="submit">Xác nhận trả phiếu này</button>
+                </form>
+            </fieldset>
+        </th:block>
+    </th:block>
+
+</body>
+
+</html>

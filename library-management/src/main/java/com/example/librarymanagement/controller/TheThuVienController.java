@@ -51,7 +51,7 @@ public class TheThuVienController {
     }
 
     @PostMapping("/tao-the")
-    public String taoThe(@ModelAttribute TaoTheRequest request, Model model) {
+    public String taoTheTheThuVienMoi(@ModelAttribute TaoTheRequest request, Model model) {
         try {
             theThuVienService.taoTheThuVien(request);
             return "redirect:/the-thu-vien/quan-ly";
