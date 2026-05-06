@@ -61,7 +61,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     private boolean isManagerPath(String path) {
         return path.startsWith("/quanly")
                 || path.startsWith("/NXB")
-                || path.startsWith("/nhanvien/quanly")
+                || path.startsWith("/quanly/nhanvien")
                 || path.startsWith("/tailieu")
                 || path.startsWith("/tacgia")
                 || path.startsWith("/nhacungcap");

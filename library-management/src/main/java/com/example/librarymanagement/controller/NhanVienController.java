@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/nhanvien/quanly")
+@RequestMapping("/quanly/nhanvien")
 public class NhanVienController {
 
     private final NhanVienService service;
@@ -48,7 +48,7 @@ public class NhanVienController {
     @PostMapping
     public String save(@ModelAttribute NhanVien nhanVien) {
         service.save(nhanVien);
-        return "redirect:/nhanvien/quanly";
+        return "redirect:/quanly/nhanvien";
     }
 
     @GetMapping("/update/{id}")
@@ -61,6 +61,6 @@ public class NhanVienController {
     @PostMapping("/update/{id}")
     public String capNhat(@PathVariable Integer id, @ModelAttribute NhanVien nhanVien) {
         service.capNhat(id, nhanVien);
-        return "redirect:/nhanvien/quanly";
+        return "redirect:/quanly/nhanvien";
     }
 }

@@ -52,11 +52,12 @@ public class BaoCaoService {
                 hoaDonRepository.count(),
                 safe(hoaDonRepository.sumTongTienPhat()),
                 phieuNhapKhoRepository.count(),
-                safe(phieuNhapKhoRepository.sumTongTien())
-        );
+                safe(phieuNhapKhoRepository.sumTongTien()));
     }
 
     private long safe(Long value) {
-        return value == null ? 0L : value;
+        if (value == null)
+            return 0L;
+        return value;
     }
 }

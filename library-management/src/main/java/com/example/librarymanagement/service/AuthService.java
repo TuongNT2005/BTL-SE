@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
     private static final int MANAGER_ID = 1;
-
     private final BanDocRepository banDocRepository;
     private final NhanVienRepository nhanVienRepository;
 

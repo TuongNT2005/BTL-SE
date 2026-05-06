@@ -21,7 +21,7 @@ public class NhanVienService {
 
     public NhanVien findById(Integer id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Khong tim thay nhan vien"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên!"));
     }
 
     public NhanVien save(NhanVien nhanVien) {
@@ -75,6 +75,8 @@ public class NhanVienService {
     }
 
     private String normalize(String value) {
-        return value == null ? "" : value.trim();
+        if (value == null)
+            return "";
+        return value.trim();
     }
 }

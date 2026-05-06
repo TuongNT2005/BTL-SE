@@ -37,10 +37,7 @@ public class BanDocController {
     }
 
     @GetMapping("/tracuu")
-    public String traCuuTaiLieu(
-            @RequestParam(required = false) String keyword,
-            Model model,
-            HttpSession session) {
+    public String traCuuTaiLieu(@RequestParam(required = false) String keyword, Model model, HttpSession session) {
         model.addAttribute("currentUser", session.getAttribute(AuthController.CURRENT_USER_SESSION_KEY));
         model.addAttribute("keyword", keyword == null ? "" : keyword.trim());
         model.addAttribute("taiLieus", service.traCuuTaiLieu(keyword));

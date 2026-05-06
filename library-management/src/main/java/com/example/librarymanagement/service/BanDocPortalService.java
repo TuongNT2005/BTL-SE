@@ -21,16 +21,17 @@ public class BanDocPortalService {
     public List<PhieuMuon> findLichSuMuonTra(Integer maDocGia) {
         return phieuMuonRepository.findLichSuByMaDocGia(maDocGia);
     }
+
     public List<TaiLieu> traCuuTaiLieu(String keyword) {
         String key = normalize(keyword);
         if (key.isBlank()) {
-            List<TaiLieu> taiLieus= taiLieuRepository.findAll();
-            taiLieus.sort(new Comparator<TaiLieu>() {
-                @Override
-                public int compare(TaiLieu tl1, TaiLieu tl2){
-                    return tl1.getTenTl().compareTo(tl2.getTenTl());
-                }
-            });
+            List<TaiLieu> taiLieus = taiLieuRepository.findAll();
+            // taiLieus.sort(new Comparator<TaiLieu>() {
+            // @Override
+            // public int compare(TaiLieu tl1, TaiLieu tl2){
+            // return tl1.getTenTl().compareTo(tl2.getTenTl());
+            // }
+            // });
             return taiLieus;
         }
         return taiLieuRepository.searchBasic(key);

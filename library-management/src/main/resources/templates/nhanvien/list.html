@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Danh sách nhân viên</h1>
-    <a th:href="@{/nhanvien/quanly/new}">Thêm mới</a>
+    <a th:href="@{/quanly/nhanvien/new}">Thêm mới</a>
     <table border="1">
         <tr>
             <th>ID</th>
@@ -21,7 +21,7 @@
             <td th:text="${nhanVien.sdt}">Sdt</td>
             <td th:text="${nhanVien.trangThaiLamViec == true ? 'Dang lam viec' : 'Tam dung'}">Trang thai</td>
             <td>
-                <a th:href="@{'/nhanvien/quanly/update/' + ${nhanVien.maNhanVien}}">Sửa</a>
+                <a th:href="@{'/quanly/nhanvien/update/' + ${nhanVien.maNhanVien}}">Sửa</a>
             </td>
         </tr>
     </table>

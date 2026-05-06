@@ -15,7 +15,7 @@
 </head>
 <body>
 <h2 th:text="${isEdit} ? 'Cap nhat nhan vien' : 'Them moi nhan vien'"></h2>
-<form th:action="${isEdit} ? @{/nhanvien/quanly/update/{id}(id=${nhanVien.maNhanVien})} : @{/nhanvien/quanly}" th:object="${nhanVien}" method="post">
+<form th:action="${isEdit} ? @{/quanly/nhanvien/update/{id}(id=${nhanVien.maNhanVien})} : @{/quanly/nhanvien}" th:object="${nhanVien}" method="post">
     <input type="hidden" th:field="*{maNhanVien}"/>
     <div class="form-group">
         <label for="ten">Tên nhân viên</label>
@@ -38,6 +38,6 @@
     </div>
     <button type="submit" th:text="${isEdit} ? 'Cap nhat' : 'Luu'"></button>
 </form>
-<a th:href="@{/nhanvien/quanly}">Quay lại danh sách</a>
+<a th:href="@{/quanly/nhanvien}">Quay lại danh sách</a>
 </body>
 </html>
