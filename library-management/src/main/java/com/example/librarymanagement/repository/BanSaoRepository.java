@@ -21,4 +21,6 @@ public interface BanSaoRepository extends JpaRepository<BanSao, Integer> {
     long countByTrangThaiLuuThong(TrangThaiLuuThong trangThaiLuuThong);
 
     long countByTinhTrangVatLy(TinhTrangVatLy tinhTrangVatLy);
+
+    int countByTaiLieu_MaTaiLieuAndTrangThaiLuuThong(Integer maTaiLieu, TrangThaiLuuThong trangThaiLuuThong);
 }

@@ -30,6 +30,8 @@
         <button type="submit">Đăng nhập bạn đọc</button>
     </form>
     <a class="switch-link" th:href="@{/login(role='nhanvien')}">Đăng nhập với tư cách nhân viên</a>
+    <br>
+    <a class="switch-link" th:href="@{/bandoc/tracuu}">Vào thư viện</a>
 </div>
 
 <div class="panel" th:if="${param.role != null && param.role[0] == 'nhanvien'}">
@@ -46,6 +48,8 @@
         <button type="submit">Đăng nhập nhân viên</button>
     </form>
     <a class="switch-link" th:href="@{/login}">Đăng nhập với tư cách bạn đọc</a>
+    <br>
+    <a class="switch-link" th:href="@{bandoc/tracuu}">Vào thư viện</a>
 </div>
 </body>
 </html>

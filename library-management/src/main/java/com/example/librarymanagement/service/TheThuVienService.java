@@ -21,11 +21,9 @@ import java.util.Random;
 @Service
 public class TheThuVienService {
     private final BanSaoRepository banSaoRepository;
-    private final BanSaoService banSaoService;
     private final TheThuVienRepository theThuVienRepository;
     private final BanDocService banDocService;
     private final GoiTheRepository goiTheRepository;
-    private final ChiTietPhieuMuonRepository chiTietPhieuMuonRepository;
 
     public TheThuVienService(
             TheThuVienRepository theThuVienRepository,
@@ -36,8 +34,6 @@ public class TheThuVienService {
         this.theThuVienRepository = theThuVienRepository;
         this.banDocService = banDocService;
         this.goiTheRepository = goiTheRepository;
-        this.chiTietPhieuMuonRepository = chiTietPhieuMuonRepository;
-        this.banSaoService = banSaoService;
         this.banSaoRepository = banSaoRepository;
     }
 
@@ -115,13 +111,13 @@ public class TheThuVienService {
         if (the == null || the.getNgayHetHan() == null) {
             return false;
         }
-        if (the.getTrangThai() == TrangThaiThe.KHOA) return false;
+        if (the.getTrangThai() == TrangThaiThe.KHOA)
+            return false;
         LocalDateTime ngayHetHanMoi = the.getNgayHetHan().plusMonths(request.getSoThangGiaHan());
         the.setNgayHetHan(ngayHetHanMoi);
-        if(the.getNgayHetHan().isBefore(LocalDateTime.now())) {
+        if (the.getNgayHetHan().isBefore(LocalDateTime.now())) {
             the.setTrangThai(TrangThaiThe.HET_HAN);
-        }
-        else {
+        } else {
             the.setTrangThai(TrangThaiThe.HOAT_DONG);
         }
         theThuVienRepository.save(the);

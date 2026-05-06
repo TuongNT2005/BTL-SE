@@ -18,12 +18,10 @@ public class NhaCungCapService {
     public List<NhaCungCap> findAll() {
         return repository.findAll();
     }
-
     public NhaCungCap findById(Integer id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy nhà cung cấp"));
     }
-
     public NhaCungCap save(NhaCungCap nhaCungCap) {
         return repository.save(nhaCungCap);
     }

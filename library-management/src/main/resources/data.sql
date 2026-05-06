@@ -6,6 +6,7 @@ CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
 USE QuanLyThuVien;
+SET NAMES utf8mb4;
 
 CREATE TABLE TacGia (
     ma_tac_gia INT AUTO_INCREMENT PRIMARY KEY,

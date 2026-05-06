@@ -20,6 +20,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             "/login",
             "/login/bandoc",
             "/login/nhanvien",
+            "/bandoc/tracuu",
             "/error"
     );
 
@@ -43,7 +44,8 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        if (path.startsWith("/nhanvien") && !currentUser.isNhanVien()) {
+
+        if (isStaffPath(path) && !currentUser.isNhanVien()) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Chỉ nhân viên được truy cập");
             return false;
         }
@@ -63,6 +65,13 @@ public class AuthInterceptor implements HandlerInterceptor {
                 || path.startsWith("/tailieu")
                 || path.startsWith("/tacgia")
                 || path.startsWith("/nhacungcap");
+    }
+
+    private boolean isStaffPath(String path) {
+        return path.startsWith("/nhanvien")
+                || path.startsWith("/the-thu-vien")
+                || path.startsWith("/muon-tra")
+                || path.startsWith("/kho");
     }
 
     private String normalizePath(HttpServletRequest request) {

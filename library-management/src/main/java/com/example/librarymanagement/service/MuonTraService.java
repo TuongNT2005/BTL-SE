@@ -3,7 +3,6 @@ package com.example.librarymanagement.service;
 import com.example.librarymanagement.auth.CurrentUser;
 import com.example.librarymanagement.dto.ChiTietTraDTO;
 import com.example.librarymanagement.dto.LapPhieuMuonRequest;
-import com.example.librarymanagement.dto.TraSachChiTietRow;
 import com.example.librarymanagement.dto.TraSachRequest;
 import com.example.librarymanagement.entity.BanSao;
 import com.example.librarymanagement.entity.ChiTietPhieuMuon;
@@ -41,7 +40,6 @@ import java.util.Set;
 @Service
 public class MuonTraService {
 
-    private final ChiTietPhieuNhapRepository chiTietPhieuNhapRepository;
     private final TheThuVienService theThuVienService;
     private final BanSaoService banSaoService;
     private final NhanVienRepository nhanVienRepository;
@@ -70,7 +68,6 @@ public class MuonTraService {
         this.chiTietPhieuMuonRepository = chiTietPhieuMuonRepository;
         this.phieuPhatRepository = phieuPhatRepository;
         this.hoaDonRepository = hoaDonRepository;
-        this.chiTietPhieuNhapRepository = chiTietPhieuNhapRepository;
         this.theThuVienRepository = theThuVienRepository;
     }
 
@@ -89,11 +86,11 @@ public class MuonTraService {
         if (theThuVien == null) {
             throw new RuntimeException("Không tìm thấy thẻ thư viện!");
         }
-        if(theThuVien.getTrangThai() == TrangThaiThe.HET_HAN) {
+        if (theThuVien.getTrangThai() == TrangThaiThe.HET_HAN) {
             throw new RuntimeException("Thẻ thư viện đã hết hạn! Hãy gia hạn thẻ trước!");
         }
 
-        if(theThuVien.getTrangThai() == TrangThaiThe.KHOA) {
+        if (theThuVien.getTrangThai() == TrangThaiThe.KHOA) {
             throw new RuntimeException("Thẻ thư viện đã bị khá! Hãy liên hệ nhân viên thư viện để được hỗ trợ!");
         }
         Set<Integer> seenBanSao = new HashSet<>();
@@ -273,7 +270,7 @@ public class MuonTraService {
         hoaDonRepository.save(hoaDon);
 
         TheThuVien theThuVien = hoaDon.getTheThuVien();
-        if(theThuVien.getTrangThai() == TrangThaiThe.KHOA) {
+        if (theThuVien.getTrangThai() == TrangThaiThe.KHOA) {
             theThuVien.setTrangThai(TrangThaiThe.HOAT_DONG);
             theThuVienRepository.save(theThuVien);
         }

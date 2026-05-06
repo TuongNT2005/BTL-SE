@@ -1,8 +1,8 @@
 package com.example.librarymanagement.service;
 
+import java.util.Comparator;
 import java.util.List;
 
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.librarymanagement.entity.PhieuMuon;
@@ -15,23 +15,30 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BanDocPortalService {
-
     private final PhieuMuonRepository phieuMuonRepository;
     private final TaiLieuRepository taiLieuRepository;
 
     public List<PhieuMuon> findLichSuMuonTra(Integer maDocGia) {
         return phieuMuonRepository.findLichSuByMaDocGia(maDocGia);
     }
-
     public List<TaiLieu> traCuuTaiLieu(String keyword) {
-        String normalizedKeyword = normalize(keyword);
-        if (normalizedKeyword.isBlank()) {
-            return taiLieuRepository.findAll(Sort.by(Sort.Direction.ASC, "tenTl"));
+        String key = normalize(keyword);
+        if (key.isBlank()) {
+            List<TaiLieu> taiLieus= taiLieuRepository.findAll();
+            taiLieus.sort(new Comparator<TaiLieu>() {
+                @Override
+                public int compare(TaiLieu tl1, TaiLieu tl2){
+                    return tl1.getTenTl().compareTo(tl2.getTenTl());
+                }
+            });
+            return taiLieus;
         }
-        return taiLieuRepository.searchBasic(normalizedKeyword);
+        return taiLieuRepository.searchBasic(key);
     }
 
     private String normalize(String value) {
-        return value == null ? "" : value.trim();
+        if (value == null)
+            return "";
+        return value.trim();
     }
 }

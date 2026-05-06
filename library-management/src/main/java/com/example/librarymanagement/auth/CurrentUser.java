@@ -37,7 +37,7 @@ public class CurrentUser implements Serializable {
     }
 
     public boolean isNhanVien() {
-        return role == AuthRole.NHAN_VIEN || role == AuthRole.QUAN_LY;
+        return role == AuthRole.NHAN_VIEN;
     }
 
     public boolean isBanDoc() {

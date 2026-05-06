@@ -26,7 +26,7 @@ public class AuthService {
 
         return new CurrentUser(banDoc.getMaDocGia(), banDoc.getHoTen(), banDoc.getEmail(), AuthRole.BAN_DOC);
     }
- 
+
     public CurrentUser loginNhanVien(String sdt, String matKhau) {
         NhanVien nhanVien = nhanVienRepository.findBySdt(normalize(sdt))
                 .orElseThrow(() -> new RuntimeException("Số điện thoại nhân viên không đúng"));
@@ -38,12 +38,18 @@ public class AuthService {
         if (!normalize(matKhau).equals(nhanVien.getMatKhau())) {
             throw new RuntimeException("Mật khẩu nhân viên không đúng");
         }
-
-        AuthRole role = MANAGER_ID == nhanVien.getMaNhanVien() ? AuthRole.QUAN_LY : AuthRole.NHAN_VIEN;
+        AuthRole role;
+        if (MANAGER_ID == nhanVien.getMaNhanVien()) {
+            role = AuthRole.QUAN_LY;
+        } else {
+            role = AuthRole.NHAN_VIEN;
+        }
         return new CurrentUser(nhanVien.getMaNhanVien(), nhanVien.getTen(), nhanVien.getSdt(), role);
     }
 
     private String normalize(String value) {
-        return value == null ? "" : value.trim();
+        if (value == null)
+            return "";
+        return value.trim();
     }
 }

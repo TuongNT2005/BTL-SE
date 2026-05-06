@@ -1,10 +1,12 @@
-drop database quanlythuvien
+-- Database initialization script (generated from provided .txt)
+DROP DATABASE IF EXISTS QuanLyThuVien;
 
 CREATE DATABASE IF NOT EXISTS QuanLyThuVien
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
 USE QuanLyThuVien;
+SET NAMES utf8mb4;
 
 CREATE TABLE TacGia (
     ma_tac_gia INT AUTO_INCREMENT PRIMARY KEY,
@@ -34,7 +36,7 @@ CREATE TABLE GoiThe (
     ma_goi_the INT AUTO_INCREMENT PRIMARY KEY,
     ten VARCHAR(100) NOT NULL,
     gia BIGINT NOT NULL,
-    thoi_han INT NOT NULL,
+    thoi_han INT NOT NULL COMMENT 'Tháng',
     UNIQUE KEY uq_goithe_ten (ten)
 );
 
@@ -107,7 +109,7 @@ CREATE TABLE TheThuVien (
     ma_the VARCHAR(50) PRIMARY KEY,
     ngay_phat_hanh DATETIME DEFAULT CURRENT_TIMESTAMP,
     ngay_het_han DATETIME NOT NULL,
-    trang_thai ENUM('HOAT_DONG','HET_HAN', 'KHOA') DEFAULT 'HOAT_DONG',
+    trang_thai ENUM('HOAT_DONG','HET_HAN','KHOA') DEFAULT 'HOAT_DONG',
     ma_goi_the INT NOT NULL,
     ma_doc_gia INT NOT NULL,
     FOREIGN KEY (ma_goi_the) REFERENCES GoiThe(ma_goi_the) ON DELETE RESTRICT,
@@ -157,7 +159,6 @@ CREATE TABLE PhieuPhat (
     FOREIGN KEY (ma_chi_tiet_phieu_muon) REFERENCES ChiTietPhieuMuon(ma_chi_tiet_phieu_muon) ON DELETE CASCADE,
     FOREIGN KEY (ma_hoa_don) REFERENCES HoaDon(ma_hoa_don) ON DELETE CASCADE
 );
-
 
 INSERT INTO TacGia (ten, tieu_su) VALUES
 ('Nguyễn Nhật Ánh', 'Nhà văn nổi tiếng Việt Nam'),
@@ -219,9 +220,9 @@ INSERT INTO ChiTietPhieuMuon (ma_phieu_muon, ma_ban_sao) VALUES
 (1, 2),
 (2, 3);
 
-INSERT INTO HoaDon (ma_nhan_vien, ma_the) VALUES
-(1, 'THE001'),
-(2, 'THE002');
+INSERT INTO HoaDon (ma_nhan_vien, ma_the, trang_thai) VALUES
+(1, 'THE001', 'CHUA_THANH_TOAN'),
+(2, 'THE002', 'DA_THANH_TOAN');
 
 INSERT INTO PhieuPhat (tien_phat, ma_chi_tiet_phieu_muon, ma_hoa_don) VALUES
 (50000, 1, 1),
@@ -234,19 +235,17 @@ STARTS CURRENT_TIMESTAMP
 DO
 BEGIN
     UPDATE TheThuVien
-    SET trang_thai = 'HET_HAN'
+    SET trang_thai = 'KHOA'
     WHERE ma_the IN (
         SELECT DISTINCT ma_the
         FROM HoaDon
         WHERE trang_thai = 'CHUA_THANH_TOAN'
           AND ngay_tao <= NOW() - INTERVAL 7 DAY
     );
-    
 END$$
 DELIMITER ;
 
 DELIMITER $$
-
 CREATE EVENT e_cap_nhat_the_het_han_hang_ngay
 ON SCHEDULE EVERY 1 DAY
 STARTS (TIMESTAMP(CURRENT_DATE) + INTERVAL 1 DAY + INTERVAL 1 MINUTE)
@@ -254,8 +253,8 @@ DO
 BEGIN
     UPDATE TheThuVien
     SET trang_thai = 'HET_HAN'
-    WHERE ngay_het_han < NOW() 
+    WHERE ngay_het_han < NOW()
       AND trang_thai = 'HOAT_DONG';
 END$$
-
 DELIMITER ;
+

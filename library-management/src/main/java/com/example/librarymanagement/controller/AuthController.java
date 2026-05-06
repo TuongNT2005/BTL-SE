@@ -26,8 +26,16 @@ public class AuthController {
         model.addAttribute("errorMessage", ex.getMessage());
         return "error";
     }
+    @GetMapping("/")
+    public String home(){
+        return "redirect:/bandoc/tracuu";
+    }
+    public String getMethodName(@RequestParam String param) {
+        return new String();
+    }
+    
 
-    @GetMapping({ "/", "/login" })
+    @GetMapping( "/login" )
     public String loginPage(HttpSession session) {
         CurrentUser currentUser = (CurrentUser) session.getAttribute(CURRENT_USER_SESSION_KEY);
         if (currentUser == null) {

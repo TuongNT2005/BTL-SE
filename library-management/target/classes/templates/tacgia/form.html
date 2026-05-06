@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${isEdit} ? 'Cap nhat Tac Gia' : 'Them moi Tac Gia'">Them moi Tac Gia</title>
+    <title th:text="${isEdit} ? 'Cập nhật Tác Giả' : 'Thêm mới Tác Giả'">Thêm mới Tác Giả</title>
     <style>
         body {font-family: Arial, sans-serif; margin: 2rem;}
         .form-group {margin-bottom: 1rem;}
@@ -12,7 +12,7 @@
     </style>
 </head>
 <body>
-<h2 th:text="${isEdit} ? 'Cập nhật Tác giả' : 'Thêm mới Tác giả'"></h2>
+<h2 th:text="${isEdit} ? 'Cập nhật Tác Giả' : 'Thêm mới Tác Giả'"></h2>
 <form th:action="${isEdit} ? @{/tacgia/update/{id}(id=${tacGia.maTacGia})} : @{/tacgia}" th:object="${tacGia}" method="post">
     <input type="hidden" th:field="*{maTacGia}"/>
     <div class="form-group">
@@ -25,6 +25,7 @@
     </div>
     <button type="submit" th:text="${isEdit} ? 'Cập nhật' : 'Lưu'"></button>
 </form>
-<a th:href="@{/tacgia}">Quay lại danh sách</a>
+<p><a th:href="@{/tacgia}">Quay lại danh sách</a></p>
+<p><a th:href="@{/quanly}">Quay lại trang quản lý</a></p>
 </body>
 </html>
